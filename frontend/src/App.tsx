@@ -2,10 +2,12 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import HerComponent from './components/HerComponent';
+import DrawingComponent from './components/DrawingComponent';
 
 function App() {
   return (
     <div className="App">
+      <DrawingComponent/>
       <HerComponent/>
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
