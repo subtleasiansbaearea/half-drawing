@@ -9,6 +9,9 @@ function addLine(
 ) {
   let isPaint = false;
   let lastLine: Konva.Line;
+  stage.off("mousedown touchstart");
+  stage.off("mouseup touchend");
+  stage.off("mousemove touchmove");
 
   stage.on("mousedown touchstart", function (e) {
     isPaint = true;
@@ -20,7 +23,9 @@ function addLine(
       stroke: mode === "brush" ? color : "white",
       strokeWidth: mode === "brush" ? width : 20,
       globalCompositeOperation: mode === "brush" ? "source-over" : "destination-out",
-      points: [pos.x, pos.y]
+      points: [pos.x, pos.y],
+      lineJoin: "round",
+      lineCap: "round",
     });
     layer.add(lastLine);
   });
