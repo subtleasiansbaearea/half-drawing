@@ -1,0 +1,17 @@
+.drawing-section canvas {
+    cursor: crosshair;
+}
+
+.drawing-section {
+    white-space: nowrap;
+    margin: 20px;
+    border: 1px solid #ababab;
+}
+
+.drawing-section .tools {
+    display: inline-block;
+}
+
+.drawing-section .stage {
+    display: inline-block;
+}

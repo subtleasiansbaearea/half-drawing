@@ -1,85 +1,86 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Stage, Layer } from 'react-konva';
+import '../styles/DrawingComponent.css';
+
+import { BlockPicker, ColorResult } from 'react-color';
+import { Layer, Stage } from 'react-konva';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+
+import Button from "react-bootstrap/Button";
+import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Konva from 'konva';
-import '../styles/MyComponent.css';
-import { Mode } from './constants'
+import addLine from './tools/Line'
 
 /**
  * React implementation of
- * https://konvajs.org/docs/sandbox/Free_Drawing.html
+ * https://medium.com/better-programming/how-to-make-a-whiteboard-app-with-react-konva-8766a532a39f
  */
 function DrawingCanvas() {
   const stageRef = useRef<Stage>(null);
   const layerRef = useRef<Konva.Layer>(null);
-  const stage = stageRef.current;
-  const layer = layerRef.current;
-  const [isPaint, setIsPaint] = useState(false);
-  const [mode, setMode] = useState(Mode.Brush);
-  const [lines, setLines] = useState<Array<Konva.Line>>([]);
-  const [lastLine, setLastLine] = useState<Konva.Line>();
+  // const [lines, setLines] = useState<Array<Konva.Line>>([]);
   const [color, setColor] = useState("#ef740e");
-  const width = window.innerWidth - 20;
 
-  function onMouseDown() {
-    setIsPaint(true);
-    const pos = stage?.getStage().getPointerPosition();
-    if (pos == null) {
-      return;
-    }
-
-    setLastLine(new Konva.Line({
-      stroke: color,
-      strokeWidth: 5,
-      points: [pos.x, pos.y],
-      globalCompositeOperation: mode === 'brush' ? 'source-over' : 'destination-out',
-    }));
-    if (lastLine) {
-      layer?.add(lastLine);
-    }
+  const handleChangeComplete = (color: ColorResult, event: ChangeEvent<HTMLInputElement>) => {
+    setColor(color.hex);
   }
-
-  function onMouseUp() {
-    setIsPaint(false);
+  function drawLine() {
+    if (!stageRef?.current || !layerRef?.current) return;
+    addLine(stageRef.current.getStage(), layerRef?.current, "brush", color);
   }
-
-  function onMouseMove() {
-    if (!isPaint) {
-      return;
-    }
-    const pos = stage?.getStage().getPointerPosition();
-    if (pos == null) {
-      return;
-    }
-    var newPoints = lastLine?.points().concat([pos.x, pos.y]);
-    if (newPoints) {
-      lastLine?.points(newPoints);
-    }
-    layer?.batchDraw();
-    if (lastLine) {
-      lines.push(lastLine);
-    }
-  }
-
-  const style = {
-    border: "1px solid black"
+  function eraseLine() {
+    if (!stageRef?.current || !layerRef?.current) return;
+    addLine(stageRef?.current?.getStage(), layerRef?.current, "erase");
   };
 
+  function clear() {
+    layerRef.current?.destroyChildren();
+    layerRef.current?.clear();
+  }
+  const notYetImplemented = () => {
+    window.alert("action not yet implemented!");
+  }
+
+  useEffect(drawLine);
+
+  const canvasStyle = {
+    border: "1px solid black"
+  };
   return (
-    <Stage
-      style={style}
-      ref={stageRef}
-      width={width}
-      height={400}
-      onMouseDown={onMouseDown}
-      onTouchStart={onMouseDown}
-      onMouseUp={onMouseUp}
-      onTouchEnd={onMouseUp}
-      onMouseMove={onMouseMove}
-      onTouchMove={onMouseMove}
-    >
-      <Layer ref={layerRef}>
-      </Layer>
-    </Stage>
+    <div className="drawing-section">
+      <div className="tools">
+        <BlockPicker onChangeComplete={handleChangeComplete} />
+        <ButtonGroup>
+          <Button variant="secondary" onClick={drawLine}>
+            Draw
+          </Button>
+          <Button variant="secondary" onClick={eraseLine}>
+            Erase
+          </Button>
+          <Button variant="secondary" onClick={notYetImplemented}>
+            Line
+          </Button>
+          <Button variant="secondary" onClick={notYetImplemented}>
+            Fill
+          </Button>
+          <Button variant="secondary" onClick={notYetImplemented}>
+            Undo
+          </Button>
+          <Button variant="secondary" onClick={clear}>
+            Clear
+          </Button>
+        </ButtonGroup>
+      </div>
+      <div className="stage">
+        <Stage
+          style={canvasStyle}
+          ref={stageRef}
+          width={600}
+          height={400}
+        >
+          <Layer ref={layerRef}>
+          </Layer>
+        </Stage>
+      </div>
+    </div>
   );
 }
 
