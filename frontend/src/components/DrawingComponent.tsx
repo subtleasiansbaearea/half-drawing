@@ -29,6 +29,7 @@ const defaultProps: DrawingCanvasProps = {
 function DrawingCanvas(props: DrawingCanvasProps) {
   const stageRef = useRef<Stage>(null);
   const layerRef = useRef<Konva.Layer>(null);
+  const undoRef = useRef<HTMLButtonElement>(null);
   // const [lines, setLines] = useState<Array<Konva.Line>>([]);
   const [brushWidth, setBrushWidth] = useState(DEFAULT_BRUSH_WIDTH);
   const [color, setColor] = useState("#ef740e");
@@ -36,6 +37,7 @@ function DrawingCanvas(props: DrawingCanvasProps) {
   const handleChangeComplete = (color: ColorResult, event: ChangeEvent<HTMLInputElement>) => {
     setColor(color.hex);
   }
+
   function drawLine() {
     if (!stageRef?.current || !layerRef?.current) return;
     addLine(stageRef.current.getStage(), layerRef?.current,
@@ -57,11 +59,19 @@ function DrawingCanvas(props: DrawingCanvasProps) {
     children[children.length - 1].destroy();
     layerRef.current.draw();
   }
-  const notYetImplemented = () => {
-    window.alert("action not yet implemented!");
+
+  function keydownHandler(e: KeyboardEvent) {
+    if (e.ctrlKey && e.key === 'z') {
+      undo();
+    }
   }
 
-  useEffect(drawLine);
+  function onInit() {
+    drawLine();
+    document.addEventListener("keydown", keydownHandler, false);
+  }
+
+  useEffect(onInit);
 
   const canvasStyle = {
     border: "1px solid #ababab"
