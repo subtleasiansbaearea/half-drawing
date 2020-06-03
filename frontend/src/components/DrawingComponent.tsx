@@ -22,6 +22,7 @@ function DrawingCanvas() {
 
   function onMouseDown() {
     setIsPaint(true);
+    console.log('mouseDown');
     const pos = stage?.getStage().getPointerPosition();
     if (pos == null) {
       return;
@@ -40,22 +41,26 @@ function DrawingCanvas() {
 
   function onMouseUp() {
     setIsPaint(false);
+    console.log('mouseUp');
   }
 
   function onMouseMove() {
     if (!isPaint) {
       return;
     }
+    console.log('painting and moving');
     const pos = stage?.getStage().getPointerPosition();
     if (pos == null) {
       return;
     }
     var newPoints = lastLine?.points().concat([pos.x, pos.y]);
     if (newPoints) {
+      console.log('new points');
       lastLine?.points(newPoints);
     }
     layer?.batchDraw();
     if (lastLine) {
+      console.log('last line');
       lines.push(lastLine);
     }
   }
