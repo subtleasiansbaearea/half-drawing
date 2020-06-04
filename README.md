@@ -1,5 +1,9 @@
 # TODO:
+required:
 [] - add routing via react
+nice to have:
+[] - make it responsive
+[] - clean up code
 
 
 ## Project Structure
