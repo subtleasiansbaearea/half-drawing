@@ -1,3 +1,7 @@
+# TODO:
+[] - add routing via react
+
+
 ## How to Run locally:
 ```
 npm install
