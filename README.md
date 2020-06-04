@@ -22,3 +22,4 @@ $ git add .
 $ git commit -am "make it better"
 $ git push heroku [branch to deploy]
 ```
+Check https://half-drawing.herokuapp.com/ for updates
