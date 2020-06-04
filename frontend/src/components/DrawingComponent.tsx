@@ -1,4 +1,4 @@
-import '../styles/DrawingComponent.css';
+import '../styles/DrawingComponent.scss';
 
 import { BlockPicker, ColorResult } from 'react-color';
 import { Layer, Stage } from 'react-konva';
@@ -29,6 +29,7 @@ const defaultProps: DrawingCanvasProps = {
 function DrawingCanvas(props: DrawingCanvasProps) {
   const stageRef = useRef<Stage>(null);
   const layerRef = useRef<Konva.Layer>(null);
+  // eslint-disable-next-line
   const undoRef = useRef<HTMLButtonElement>(null);
   // const [lines, setLines] = useState<Array<Konva.Line>>([]);
   const [brushWidth, setBrushWidth] = useState(DEFAULT_BRUSH_WIDTH);
