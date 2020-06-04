@@ -23,3 +23,6 @@ $ git commit -am "make it better"
 $ git push heroku [branch to deploy]
 ```
 Check https://half-drawing.herokuapp.com/ for updates
+Use:
+`heroku logs --tail`
+to see deployment logs to debug any deployment issues
