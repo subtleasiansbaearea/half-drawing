@@ -2,6 +2,12 @@
 [] - add routing via react
 
 
+## Project Structure
+- root
+  - server.js
+  - frontend
+    - ~frontend code~
+
 ## How to Run locally:
 ```
 npm install
