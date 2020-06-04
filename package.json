@@ -1,6 +1,10 @@
 {
   "name": "example-create-react-app-express",
   "version": "1.0.0",
+  "engines": {
+    "node": "12.16.x",
+    "npm": "6.x"
+  },
   "scripts": {
     "client": "cd frontend && npm start",
     "server": "nodemon server.js",
