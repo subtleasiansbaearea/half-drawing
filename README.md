@@ -20,5 +20,5 @@ This app is deployed on heroku.You will need [Heroku CLI](https://devcenter.hero
 $ heroku login
 $ git add .
 $ git commit -am "make it better"
-$ git push heroku master
+$ git push heroku [branch to deploy]
 ```
