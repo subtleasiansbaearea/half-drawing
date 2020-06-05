@@ -2,10 +2,11 @@ import '../styles/DrawingComponent.scss';
 
 import { BlockPicker, ColorResult } from 'react-color';
 import { Layer, Stage } from 'react-konva';
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import Button from "react-bootstrap/Button";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
+import { History } from './tools/History'
 import Konva from 'konva';
 import _ from 'lodash';
 import addLine from './tools/Line'
@@ -19,8 +20,8 @@ interface DrawingCanvasProps {
 }
 
 const defaultProps: DrawingCanvasProps = {
-  width: 600,
-  height: 400,
+  width: 500,
+  height: 500,
 }
 
 /**
@@ -30,29 +31,33 @@ const defaultProps: DrawingCanvasProps = {
 function DrawingCanvas(props: DrawingCanvasProps) {
   const stageRef = useRef<Stage>(null);
   const layerRef = useRef<Konva.Layer>(null);
-  // eslint-disable-next-line
-  const undoRef = useRef<HTMLButtonElement>(null);
   // const [lines, setLines] = useState<Array<Konva.Line>>([]);
   const [brushWidth, setBrushWidth] = useState(DEFAULT_BRUSH_WIDTH);
   const [color, setColor] = useState("#ef740e");
+  const [histories] = useState<Array<History>>([]);
+  function addHistory(history: History) {
+    histories.concat([history]);
+  }
 
-  const handleChangeComplete = (color: ColorResult, event: ChangeEvent<HTMLInputElement>) => {
+  function handleColorChange(color: ColorResult) {
     setColor(color.hex);
   }
 
   function drawLine() {
     if (!stageRef?.current || !layerRef?.current) return;
-    addLine(stageRef.current.getStage(), layerRef?.current,
+    addLine(stageRef.current.getStage(), layerRef?.current, addHistory,
       "brush", color, brushWidth);
   }
   function eraseLine() {
     if (!stageRef?.current || !layerRef?.current) return;
-    addLine(stageRef?.current?.getStage(), layerRef?.current, "erase");
+    addLine(stageRef?.current?.getStage(), layerRef?.current, addHistory,
+      "erase");
   };
 
   function clear() {
     layerRef.current?.destroyChildren();
     layerRef.current?.clear();
+    addHistory({ mode: 'clear', timeStarted: Date.now() })
   }
 
   function undo() {
@@ -70,12 +75,16 @@ function DrawingCanvas(props: DrawingCanvasProps) {
     }
   }
 
+  function save() {
+    console.log(JSON.stringify(histories));
+  }
+
   function onInit() {
     drawLine();
     document.addEventListener("keydown", keydownHandler, false);
   }
 
-  useEffect(onInit);
+  useEffect(onInit, []);
 
   const canvasStyle = {
     border: "1px solid #ababab"
@@ -113,7 +122,7 @@ function DrawingCanvas(props: DrawingCanvasProps) {
         <div className="brushes">
           {sizeSwatches}
         </div>
-        <BlockPicker onChangeComplete={handleChangeComplete} color={color} />
+        <BlockPicker onChangeComplete={handleColorChange} color={color} />
         <ButtonGroup>
           <Button variant="secondary" onClick={drawLine}>
             Draw
@@ -126,6 +135,9 @@ function DrawingCanvas(props: DrawingCanvasProps) {
           </Button>
           <Button variant="secondary" onClick={clear}>
             Clear
+          </Button>
+          <Button variant="secondary" onClick={save}>
+            Save
           </Button>
         </ButtonGroup>
       </div>
