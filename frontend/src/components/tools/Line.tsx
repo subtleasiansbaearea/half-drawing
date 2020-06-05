@@ -1,8 +1,8 @@
-import { History, LineHistory } from './History'
+import { History, LineHistory, PointHistory } from './History'
 
 import Konva from "konva";
 
-function addLine(
+export function addLine(
   stage: Konva.Stage,
   layer: Konva.Layer,
   addToHistory: (history: History) => void,
@@ -25,8 +25,10 @@ function addLine(
       return;
     }
     lastLineHistory = {
-      timeStarted: Date.now(),
+      startTime: Date.now(),
       mode: mode,
+      width: width,
+      color: color,
       points: [{ x: pos.x, y: pos.y, time: Date.now() }],
     };
     const isBrush = mode === "brush";
@@ -58,4 +60,54 @@ function addLine(
   });
 };
 
-export default addLine;
+export function drawLine(
+  layer: Konva.Layer,
+  history: LineHistory,
+) {
+  const points = history.points.map(
+    (pointHistory: PointHistory) => [pointHistory.x, pointHistory.y]).flat();
+  const isBrush = history.mode === "brush";
+  const line = new Konva.Line({
+    stroke: isBrush ? history.color : "white",
+    strokeWidth: isBrush ? history.width : 20,
+    globalCompositeOperation: isBrush ? "source-over" : "destination-out",
+    points: points,
+    lineJoin: "round",
+    lineCap: "round",
+  });
+
+  layer.add(line);
+  layer.draw();
+};
+
+export function playLine(
+  layer: Konva.Layer,
+  history: LineHistory,
+  timescale = 1,
+) {
+  const startTime = history.startTime;
+
+  const isBrush = history.mode === "brush";
+  const line = new Konva.Line({
+    stroke: isBrush ? history.color : "white",
+    strokeWidth: isBrush ? history.width : 20,
+    globalCompositeOperation: isBrush ? "source-over" : "destination-out",
+    points: [],
+    lineJoin: "round",
+    lineCap: "round",
+  });
+
+  for (const point of history.points) {
+    const timeDiff = point.time - startTime;
+    setTimeout(
+      () => line.points().concat([point.x, point.y]),
+      timeDiff * timescale);
+    layer.batchDraw();
+  }
+}
+
+export default {
+  addLine,
+  drawLine,
+  playLine,
+}

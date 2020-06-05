@@ -4,22 +4,23 @@ import { BlockPicker, ColorResult } from 'react-color';
 import { Layer, Stage } from 'react-konva';
 import React, { useEffect, useRef, useState } from 'react';
 
-import Button from "react-bootstrap/Button";
-import ButtonGroup from "react-bootstrap/ButtonGroup";
+import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import DrawingDisplay from './DrawingDisplay'
 import { History } from './tools/History'
 import Konva from 'konva';
 import _ from 'lodash';
-import addLine from './tools/Line'
+import { addLine } from './tools/Line'
 
 const BRUSH_WIDTHS = [4, 9, 16, 25, 36];
 const DEFAULT_BRUSH_WIDTH = 16;
 
-interface DrawingCanvasProps {
+interface DrawingComponentProps {
   width?: number,
   height?: number,
 }
 
-const defaultProps: DrawingCanvasProps = {
+const defaultProps: DrawingComponentProps = {
   width: 500,
   height: 500,
 }
@@ -28,15 +29,15 @@ const defaultProps: DrawingCanvasProps = {
  * React implementation of
  * https://medium.com/better-programming/how-to-make-a-whiteboard-app-with-react-konva-8766a532a39f
  */
-function DrawingCanvas(props: DrawingCanvasProps) {
+function DrawingComponent(props: DrawingComponentProps) {
   const stageRef = useRef<Stage>(null);
   const layerRef = useRef<Konva.Layer>(null);
-  // const [lines, setLines] = useState<Array<Konva.Line>>([]);
   const [brushWidth, setBrushWidth] = useState(DEFAULT_BRUSH_WIDTH);
   const [color, setColor] = useState("#ef740e");
-  const [histories] = useState<Array<History>>([]);
+  const [histories, setHistories] = useState<Array<History>>([]);
+
   function addHistory(history: History) {
-    histories.concat([history]);
+    setHistories([...histories, history]);
   }
 
   function handleColorChange(color: ColorResult) {
@@ -57,7 +58,7 @@ function DrawingCanvas(props: DrawingCanvasProps) {
   function clear() {
     layerRef.current?.destroyChildren();
     layerRef.current?.clear();
-    addHistory({ mode: 'clear', timeStarted: Date.now() })
+    addHistory({ mode: 'clear', startTime: Date.now() })
   }
 
   function undo() {
@@ -76,19 +77,17 @@ function DrawingCanvas(props: DrawingCanvasProps) {
   }
 
   function save() {
-    console.log(JSON.stringify(histories));
+    console.log(histories);
   }
 
   function onInit() {
-    drawLine();
+    if (layerRef?.current?.children.length === 0) {
+      drawLine();
+    }
     document.addEventListener("keydown", keydownHandler, false);
   }
 
   useEffect(onInit, []);
-
-  const canvasStyle = {
-    border: "1px solid #ababab"
-  };
 
   const sizeSwatches: Array<JSX.Element> = [];
 
@@ -115,6 +114,11 @@ function DrawingCanvas(props: DrawingCanvasProps) {
 
     )
   }
+
+  const canvasStyle = {
+    border: "1px solid #ababab"
+  };
+
   return (
     <div className="drawing-section">
       <div className="tools">
@@ -125,7 +129,7 @@ function DrawingCanvas(props: DrawingCanvasProps) {
         <BlockPicker onChangeComplete={handleColorChange} color={color} />
         <ButtonGroup>
           <Button variant="secondary" onClick={drawLine}>
-            Draw
+            Brush
           </Button>
           <Button variant="secondary" onClick={eraseLine}>
             Erase
@@ -152,10 +156,15 @@ function DrawingCanvas(props: DrawingCanvasProps) {
           </Layer>
         </Stage>
       </div>
+      <DrawingDisplay
+        width={props.width || 400}
+        histories={histories}
+        timescale={.5}
+      />
     </div>
   );
 }
 
-DrawingCanvas.defaultProps = defaultProps;
+DrawingComponent.defaultProps = defaultProps;
 
-export default DrawingCanvas;
+export default DrawingComponent;

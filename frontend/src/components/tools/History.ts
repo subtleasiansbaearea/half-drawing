@@ -6,9 +6,11 @@ export interface PointHistory {
 
 export interface History {
   mode: string,
-  timeStarted: number,
+  startTime: number,
 }
 
 export interface LineHistory extends History {
   points: Array<PointHistory>,
+  width: number;
+  color: string;
 }
