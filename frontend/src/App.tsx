@@ -1,25 +1,27 @@
-import React, { useEffect } from 'react';
+import React from 'react';
+
+import HomePage from "./components/HomePage"
+import GameNotFoundPage from "./components/GameNotFoundPage"
+import GamePage from "./components/GamePage"
+
 import './App.scss';
-import DrawingComponent from './components/DrawingComponent';
 
-function App() {
-  const callApi = async () => {
-    const response = await fetch('/api/hello');
-    const body = await response.json();
-    if (response.status !== 200) throw Error(body.message);
-    
-    return body;
-  };
+import { Link, BrowserRouter as Router, Route } from 'react-router-dom';
 
-  useEffect(() => {
-    callApi().then(resp => console.log(resp))
-  });
+const App = () => {
   return (
-    <div className="App">
+    <Router>
 
-      <DrawingComponent/>
-    </div>
+      <Link to="/">Home</Link><br/>
+      <Link to="/game">Game404</Link><br/>
+      <Link to="/game/:gameID">Game</Link>
+      
+      <Route path="/" component={HomePage}/>
+      <Route exact path="/game" component={GameNotFoundPage}/>
+      <Route exact path="/game/:gameID" component={GamePage}/>
+
+    </Router>
   );
-}
+};
 
 export default App;

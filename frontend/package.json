@@ -12,6 +12,7 @@
     "@types/react": "^16.9.35",
     "@types/react-color": "^3.0.2",
     "@types/react-dom": "^16.9.8",
+    "@types/react-router-dom": "^5.1.5",
     "konva": "^6.0.0",
     "node-sass": "^4.14.1",
     "react": "^16.13.1",
@@ -19,6 +20,7 @@
     "react-color": "^2.18.1",
     "react-dom": "^16.13.1",
     "react-konva": "^16.13.0-3",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
     "typescript": "^3.7.5"
   },
