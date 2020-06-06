@@ -1,11 +1,11 @@
 import '../styles/DrawingComponent.scss';
 
-import { BlockPicker, ColorResult } from 'react-color';
+import * as ImageConstants from '../img/constants'
+
+import { GithubPicker, ColorResult } from 'react-color';
 import { Layer, Stage } from 'react-konva';
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 
-import Button from "react-bootstrap/Button";
-import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Konva from 'konva';
 import _ from 'lodash';
 import addLine from './tools/Line'
@@ -19,8 +19,8 @@ interface DrawingCanvasProps {
 }
 
 const defaultProps: DrawingCanvasProps = {
-  width: 600,
-  height: 400,
+  width: 540,
+  height: 540,
 }
 
 /**
@@ -91,7 +91,7 @@ function DrawingCanvas(props: DrawingCanvasProps) {
       background: color,
     };
     const isSelected = size === brushWidth;
-    const brushBoxClassName = isSelected ? "brush-box selected" : "brush-box";
+    const brushBoxClassName = isSelected ? "black-border-box" : "grey-border-box";
     sizeSwatches.push(
       <div
         key={size}
@@ -103,44 +103,39 @@ function DrawingCanvas(props: DrawingCanvasProps) {
           style={buttonStyle}
         />
       </div >
-
     )
   }
   return (
-    <div className="drawing-section">
-      <div className="tools">
-        <h3>Brush sizes</h3>
-        <div className="brushes">
-          {sizeSwatches}
+    <>
+      <div className="drawing-section">
+        <div className="stage">
+          <Stage
+            style={canvasStyle}
+            ref={stageRef}
+            width={props.width}
+            height={props.height}
+          >
+            <Layer ref={layerRef}>
+            </Layer>
+          </Stage>
         </div>
-        <BlockPicker onChangeComplete={handleChangeComplete} color={color} />
-        <ButtonGroup>
-          <Button variant="secondary" onClick={drawLine}>
-            Draw
-          </Button>
-          <Button variant="secondary" onClick={eraseLine}>
-            Erase
-          </Button>
-          <Button variant="secondary" onClick={undo}>
-            Undo
-          </Button>
-          <Button variant="secondary" onClick={clear}>
-            Clear
-          </Button>
-        </ButtonGroup>
+        <div className="tools">
+          <div className="brushes">
+            {sizeSwatches}
+          </div>
+          <GithubPicker onChangeComplete={handleChangeComplete} color={color} />
+          <div className="black-border-box" onClick={eraseLine}>
+            <img id="erase-image" src={ImageConstants.ERASER_ICON}></img>
+          </div>
+          <div className="black-border-box" onClick={undo}>
+            <img id="undo-image" src={ImageConstants.UNDO_ICON}></img>
+          </div>
+          <div className="black-border-box" onClick={clear}>
+            <img id="blank-image" src={ImageConstants.BLANK_PAGE_ICON}></img>
+          </div>
+        </div>
       </div>
-      <div className="stage">
-        <Stage
-          style={canvasStyle}
-          ref={stageRef}
-          width={props.width}
-          height={props.height}
-        >
-          <Layer ref={layerRef}>
-          </Layer>
-        </Stage>
-      </div>
-    </div>
+    </>
   );
 }
 

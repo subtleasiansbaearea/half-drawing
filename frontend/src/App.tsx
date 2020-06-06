@@ -8,17 +8,18 @@ import './App.scss';
 
 const App = () => {
   return (
-    <Router>
-      
-      <Link to="/">Home</Link><br/>
-      <Link to="/game">Game404</Link><br/>
-      <Link to="/game/:gameID">Game</Link>
-      
-      <Route path="/" component={HomePage}/>
-      <Route exact path="/game" component={GameNotFoundPage}/>
-      <Route exact path="/game/:gameID" component={GamePage}/>
-
-    </Router>
+    <div className="App">
+      <h1>Biscuits and Gravy</h1>
+      <Router>
+        <Link to="/">Home</Link><br/>
+        <Link to="/game">Game404</Link><br/>
+        <Link to="/game/:gameID">Game</Link>
+        
+        <Route exact path="/" component={HomePage}/>
+        <Route exact path="/game" component={GameNotFoundPage}/>
+        <Route exact path="/game/:gameID" component={GamePage}/>
+      </Router>
+    </div>
   );
 };
 
