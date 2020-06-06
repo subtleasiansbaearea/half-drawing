@@ -7,6 +7,7 @@ import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import Button from "react-bootstrap/Button";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Konva from 'konva';
+import _ from 'lodash';
 import addLine from './tools/Line'
 
 const BRUSH_WIDTHS = [4, 9, 16, 25, 36];
@@ -57,13 +58,15 @@ function DrawingCanvas(props: DrawingCanvasProps) {
   function undo() {
     if (!layerRef?.current) return;
     const children = layerRef.current.getChildren();
-    children[children.length - 1].destroy();
+    if (children.length) {
+      children[children.length - 1].destroy();
+    }
     layerRef.current.draw();
   }
 
   function keydownHandler(e: KeyboardEvent) {
     if (e.ctrlKey && e.key === 'z') {
-      undo();
+      _.debounce(undo, 500)();
     }
   }
 
@@ -90,7 +93,11 @@ function DrawingCanvas(props: DrawingCanvasProps) {
     const isSelected = size === brushWidth;
     const brushBoxClassName = isSelected ? "brush-box selected" : "brush-box";
     sizeSwatches.push(
-      <div className={brushBoxClassName} onClick={() => setBrushWidth(size)}>
+      <div
+        key={size}
+        className={brushBoxClassName}
+        onClick={() => setBrushWidth(size)}
+      >
         <div
           className="size-button"
           style={buttonStyle}

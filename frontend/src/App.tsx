@@ -1,17 +1,15 @@
 import React from 'react';
+import { Link, BrowserRouter as Router, Route } from 'react-router-dom';
 
 import HomePage from "./components/HomePage"
 import GameNotFoundPage from "./components/GameNotFoundPage"
 import GamePage from "./components/GamePage"
-
 import './App.scss';
-
-import { Link, BrowserRouter as Router, Route } from 'react-router-dom';
 
 const App = () => {
   return (
     <Router>
-
+      
       <Link to="/">Home</Link><br/>
       <Link to="/game">Game404</Link><br/>
       <Link to="/game/:gameID">Game</Link>
