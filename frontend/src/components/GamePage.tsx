@@ -9,16 +9,13 @@ interface Route {
       gameID: string;
     }
   }
-  location: {
-
-  }
 }
-const GamePage = (match: Route) => {
-  console.log(match);
 
+const GamePage = (match: Route) => {
   const {
     match: {
-      params: { gameID }}
+      params: {gameID}
+    }
   } = match;
 
   return (
