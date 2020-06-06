@@ -1,5 +1,7 @@
 import React from 'react';
  
+import DrawingComponent from './DrawingComponent';
+
 //TODO make a call to database
 //check that the game id actually exists
 
@@ -21,6 +23,7 @@ const GamePage = (match: Route) => {
   return (
     <>
       The game ID is {gameID}
+      <DrawingComponent/>
     </>
   );
 };
