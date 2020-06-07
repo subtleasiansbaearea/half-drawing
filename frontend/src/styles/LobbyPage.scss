@@ -1,20 +1,60 @@
 $black-border: 1px solid #666;
+$max-width: 1500px;
+$margin-between-columns: 50px;
+$lobby-column-height: 700px;
+$margin-between-control-groups: 20px;
+$paragraph-paddings: 40px;
+$offset-player-name-from-left: 200px;
 
 .lobby-page {
   justify-content: center;
   display: flex;
   flex: wrap;
-  max-width: 1400px;
+  max-width: $max-width;
   flex-direction: row;
   flex-wrap: wrap;
-  .lobby-colummn:first-of-type {
-  	margin-right: 20px;
-  }
   .lobby-colummn:last-of-type {
-  	margin-left: 20px;
+    display: block;
+    background-color: blue;
+    margin-left: 40px;
   }
   .lobby-column {
-  	width: 40%;
-  	border: $black-border;
-  }  
+    label {
+      font-weight: bold;
+    }
+  	padding: 50px;
+    width: 46%;
+    border: $black-border;
+    height: $lobby-column-height;
+  }
+  .control-group {
+    margin-bottom: $margin-between-control-groups;
+  }
+
+  // Player guys
+  .player-name {
+    font-size: 50px;
+  }
+  #first-player-name {
+    @extend .player-name;
+    // spinnnnnnn
+    transform: rotate(20deg);
+    padding-left: 100px;
+    // blueeeeee
+    color: blue;
+    padding-top: 100px;
+  }
+  #second-player-name {
+    @extend .player-name;
+    // spinnnnnnn
+    transform: rotate(340deg);
+    padding-left: 400px;
+    // redddddddd
+    color: red;
+  }
+  .btn-group {
+    // this will probably go away maybe idk
+    padding-top: 30px;
+    width: 100%;
+  }
 }
