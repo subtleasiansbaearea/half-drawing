@@ -5,7 +5,8 @@ import Konva from "konva";
 export function addLine(
   stage: Konva.Stage,
   layer: Konva.Layer,
-  addToHistory: (history: History) => void,
+  histories: Array<History>,
+  setHistories: (histories: Array<History>) => void,
   mode = "brush",
   color = "#000000",
   width = 5
@@ -45,7 +46,8 @@ export function addLine(
 
   stage.on("mouseup touchend", function () {
     isPaint = false;
-    addToHistory(lastLineHistory);
+    histories = [...histories, lastLineHistory];
+    setHistories(histories);
   });
 
   stage.on("mousemove touchmove", function () {

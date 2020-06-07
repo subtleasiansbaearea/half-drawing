@@ -28,7 +28,7 @@ function DrawingDisplay(props: DrawingDisplayProps) {
 
   function clear() {
     layerRef.current?.destroyChildren();
-    layerRef.current?.clear();
+    layerRef.current?.draw();
   }
 
   function undo() {
@@ -79,7 +79,7 @@ function DrawingDisplay(props: DrawingDisplayProps) {
     const layer = layerRef.current;
     const startTime = histories[0].startTime;
     console.log(histories);
-    for (let history of histories) {
+    for (const history of histories) {
       const timeDiff = history.startTime - startTime;
       console.log(timeDiff);
       setTimeout(

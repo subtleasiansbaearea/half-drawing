@@ -1,16 +1,16 @@
-import '../styles/DrawingComponent.scss';
+import "../styles/DrawingComponent.scss";
 
-import { BlockPicker, ColorResult } from 'react-color';
-import { Layer, Stage } from 'react-konva';
-import React, { useEffect, useRef, useState } from 'react';
+import { BlockPicker, ColorResult } from "react-color";
+import { Layer, Stage } from "react-konva";
+import React, { useEffect, useRef, useState } from "react";
 
-import Button from 'react-bootstrap/Button';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import DrawingDisplay from './DrawingDisplay'
-import { History } from './tools/History'
-import Konva from 'konva';
-import _ from 'lodash';
-import { addLine } from './tools/Line'
+import Button from "react-bootstrap/Button";
+import ButtonGroup from "react-bootstrap/ButtonGroup";
+import DrawingDisplay from "./DrawingDisplay"
+import { History } from "./tools/History"
+import Konva from "konva";
+import _ from "lodash";
+import { addLine } from "./tools/Line"
 
 const BRUSH_WIDTHS = [4, 9, 16, 25, 36];
 const DEFAULT_BRUSH_WIDTH = 16;
@@ -35,30 +35,40 @@ function DrawingComponent(props: DrawingComponentProps) {
   const [brushWidth, setBrushWidth] = useState(DEFAULT_BRUSH_WIDTH);
   const [color, setColor] = useState("#ef740e");
   const [histories, setHistories] = useState<Array<History>>([]);
-
-  function addHistory(history: History) {
-    setHistories([...histories, history]);
-  }
+  const [lastDrawMode, setLastDrawMode] = useState("brush");
 
   function handleColorChange(color: ColorResult) {
     setColor(color.hex);
+
   }
 
   function drawLine() {
     if (!stageRef?.current || !layerRef?.current) return;
-    addLine(stageRef.current.getStage(), layerRef?.current, addHistory,
-      "brush", color, brushWidth);
+    addLine(stageRef.current.getStage(), layerRef?.current, histories,
+      setHistories, "brush", color, brushWidth);
+    setLastDrawMode("brush");
   }
   function eraseLine() {
     if (!stageRef?.current || !layerRef?.current) return;
-    addLine(stageRef?.current?.getStage(), layerRef?.current, addHistory,
-      "erase");
+    addLine(stageRef?.current?.getStage(), layerRef?.current, histories,
+      setHistories, "erase");
+    setLastDrawMode("erase");
   };
+
+  useEffect(() => {
+    if (lastDrawMode === "brush") {
+      drawLine();
+    } else {
+      eraseLine();
+    }
+  }, [histories, color, brushWidth]);
 
   function clear() {
     layerRef.current?.destroyChildren();
     layerRef.current?.clear();
-    addHistory({ mode: 'clear', startTime: Date.now() })
+
+    console.log(histories);
+    setHistories([...histories, { mode: "clear", startTime: Date.now() }]);
   }
 
   function undo() {
@@ -67,11 +77,12 @@ function DrawingComponent(props: DrawingComponentProps) {
     if (children.length) {
       children[children.length - 1].destroy();
     }
+    setHistories([...histories, { mode: "undo", startTime: Date.now() }]);
     layerRef.current.draw();
   }
 
   function keydownHandler(e: KeyboardEvent) {
-    if (e.ctrlKey && e.key === 'z') {
+    if (e.ctrlKey && e.key === "z") {
       _.debounce(undo, 500)();
     }
   }
