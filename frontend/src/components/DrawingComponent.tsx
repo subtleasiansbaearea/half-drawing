@@ -4,7 +4,7 @@ import * as ImageConstants from '../img/constants'
 
 import { ColorResult, GithubPicker } from 'react-color';
 import { Layer, Stage } from "react-konva";
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import DrawingDisplay from "./DrawingDisplay"
 import { History } from "./tools/History"
@@ -35,33 +35,23 @@ function DrawingComponent(props: DrawingComponentProps) {
   const [brushWidth, setBrushWidth] = useState(DEFAULT_BRUSH_WIDTH);
   const [color, setColor] = useState("#ef740e");
   const [histories, setHistories] = useState<Array<History>>([]);
-  const [lastDrawMode, setLastDrawMode] = useState("brush");
 
   function handleColorChange(color: ColorResult) {
     setColor(color.hex);
-
   }
 
   function drawLine() {
     if (!stageRef?.current || !layerRef?.current) return;
     addLine(stageRef.current.getStage(), layerRef?.current, histories,
       setHistories, "brush", color, brushWidth);
-    setLastDrawMode("brush");
   }
   function eraseLine() {
     if (!stageRef?.current || !layerRef?.current) return;
     addLine(stageRef?.current?.getStage(), layerRef?.current, histories,
       setHistories, "erase");
-    setLastDrawMode("erase");
   };
 
-  useEffect(() => {
-    if (lastDrawMode === "brush") {
-      drawLine();
-    } else {
-      eraseLine();
-    }
-  }, [histories, color, brushWidth]);
+  useEffect(drawLine, [histories, brushWidth, color]);
 
   function clear() {
     layerRef.current?.destroyChildren();
@@ -85,10 +75,6 @@ function DrawingComponent(props: DrawingComponentProps) {
     if (e.ctrlKey && e.key === "z") {
       _.debounce(undo, 500)();
     }
-  }
-
-  function save() {
-    console.log(histories);
   }
 
   function onInit() {
