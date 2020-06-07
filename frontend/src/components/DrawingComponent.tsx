@@ -124,13 +124,13 @@ function DrawingCanvas(props: DrawingCanvasProps) {
           </div>
           <GithubPicker onChangeComplete={handleChangeComplete} color={color} />
           <div className="black-border-box" onClick={eraseLine}>
-            <img id="erase-image" src={ImageConstants.ERASER_ICON}></img>
+            <img id="erase-image" src={ImageConstants.ERASER_ICON} alt="Eraser"></img>
           </div>
           <div className="black-border-box" onClick={undo}>
-            <img id="undo-image" src={ImageConstants.UNDO_ICON}></img>
+            <img id="undo-image" src={ImageConstants.UNDO_ICON} alt="Undo"></img>
           </div>
           <div className="black-border-box" onClick={clear}>
-            <img id="blank-image" src={ImageConstants.BLANK_PAGE_ICON}></img>
+            <img id="blank-image" src={ImageConstants.BLANK_PAGE_ICON} alt="Blank"></img>
           </div>
         </div>
       </div>

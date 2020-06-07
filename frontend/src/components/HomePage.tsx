@@ -1,6 +1,5 @@
 import React from 'react';
 import '../styles/HomePage.scss';
-import DrawingComponent from './DrawingComponent';
 
 
 const HomePage = () => {
