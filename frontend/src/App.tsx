@@ -5,6 +5,7 @@ import HomePage from "./components/HomePage"
 import GameNotFoundPage from "./components/GameNotFoundPage"
 import GamePage from "./components/GamePage"
 import './App.scss';
+import './'
 
 const App = () => {
   // Set a full width CSS temporarily just for debugging purposes
