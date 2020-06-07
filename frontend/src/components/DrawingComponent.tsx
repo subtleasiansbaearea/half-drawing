@@ -1,11 +1,11 @@
 import "../styles/DrawingComponent.scss";
 
-import { BlockPicker, ColorResult } from "react-color";
-import { Layer, Stage } from "react-konva";
-import React, { useEffect, useRef, useState } from "react";
+import * as ImageConstants from '../img/constants'
 
-import Button from "react-bootstrap/Button";
-import ButtonGroup from "react-bootstrap/ButtonGroup";
+import { ColorResult, GithubPicker } from 'react-color';
+import { Layer, Stage } from "react-konva";
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+
 import DrawingDisplay from "./DrawingDisplay"
 import { History } from "./tools/History"
 import Konva from "konva";
@@ -16,13 +16,13 @@ const BRUSH_WIDTHS = [4, 9, 16, 25, 36];
 const DEFAULT_BRUSH_WIDTH = 16;
 
 interface DrawingComponentProps {
-  width?: number,
-  height?: number,
+  width: number,
+  height: number,
 }
 
 const defaultProps: DrawingComponentProps = {
-  width: 500,
-  height: 500,
+  width: 540,
+  height: 540,
 }
 
 /**
@@ -110,7 +110,7 @@ function DrawingComponent(props: DrawingComponentProps) {
       background: color,
     };
     const isSelected = size === brushWidth;
-    const brushBoxClassName = isSelected ? "brush-box selected" : "brush-box";
+    const brushBoxClassName = isSelected ? "black-border-box" : "grey-border-box";
     sizeSwatches.push(
       <div
         key={size}
@@ -122,7 +122,6 @@ function DrawingComponent(props: DrawingComponentProps) {
           style={buttonStyle}
         />
       </div >
-
     )
   }
 
@@ -131,48 +130,42 @@ function DrawingComponent(props: DrawingComponentProps) {
   };
 
   return (
-    <div className="drawing-section">
-      <div className="tools">
-        <h3>Brush sizes</h3>
-        <div className="brushes">
-          {sizeSwatches}
+    <>
+      <div className="drawing-section">
+        <div className="stage">
+          <Stage
+            style={canvasStyle}
+            ref={stageRef}
+            width={props.width}
+            height={props.height}
+          >
+            <Layer ref={layerRef}>
+            </Layer>
+          </Stage>
         </div>
-        <BlockPicker onChangeComplete={handleColorChange} color={color} />
-        <ButtonGroup>
-          <Button variant="secondary" onClick={drawLine}>
-            Brush
-          </Button>
-          <Button variant="secondary" onClick={eraseLine}>
-            Erase
-          </Button>
-          <Button variant="secondary" onClick={undo}>
-            Undo
-          </Button>
-          <Button variant="secondary" onClick={clear}>
-            Clear
-          </Button>
-          <Button variant="secondary" onClick={save}>
-            Save
-          </Button>
-        </ButtonGroup>
-      </div>
-      <div className="stage">
-        <Stage
-          style={canvasStyle}
-          ref={stageRef}
+        <div className="tools">
+          <div className="brushes">
+            {sizeSwatches}
+          </div>
+          <GithubPicker onChangeComplete={handleColorChange} color={color} />
+          <div className="black-border-box" onClick={eraseLine}>
+            <img id="erase-image" src={ImageConstants.ERASER_ICON} alt="Eraser"></img>
+          </div>
+          <div className="black-border-box" onClick={undo}>
+            <img id="undo-image" src={ImageConstants.UNDO_ICON} alt="Undo"></img>
+          </div>
+          <div className="black-border-box" onClick={clear}>
+            <img id="blank-image" src={ImageConstants.BLANK_PAGE_ICON} alt="Blank"></img>
+          </div>
+        </div>
+        <DrawingDisplay
           width={props.width}
           height={props.height}
-        >
-          <Layer ref={layerRef}>
-          </Layer>
-        </Stage>
+          histories={histories}
+          timescale={0.5}
+        />
       </div>
-      <DrawingDisplay
-        width={props.width || 400}
-        histories={histories}
-        timescale={.5}
-      />
-    </div>
+    </>
   );
 }
 

@@ -1,48 +1,110 @@
+$box-dimension: 55px;
+$grey-border: 1px solid #E8E8E8;
+$light-grey-border: 1px solid #ababab;
+$black-border: 1px solid #666;
+
+$max-width-of-drawing-section: 1400px;
+$full-width-percentage: 100%;
+
+$brush-border-radius: 100px;
+
+$erase-image-width: 40px;
+$undo-image-width: 35px;
+$blank-image-width: 30px;
+
+$stage-width: 1080px;
+
+$twenty-pixels: 20px;
+
+@function compute_css_to_center_image($image-width) {
+  @return ($box-dimension - $image-width)/2;
+}
+
+.square-box {
+  height: $box-dimension;
+  width: $box-dimension;
+  margin: 0px 5px 0px 5px;
+  position: relative;
+  cursor: pointer;
+}
+
+.grey-border-box {
+  @extend .square-box;
+  border: $grey-border;
+}
+
+.black-border-box {
+  @extend .square-box;
+  border: $black-border;
+}
+
+#erase-image {
+  width: $erase-image-width;
+  padding: compute_css_to_center_image($erase-image-width);
+}
+
+#undo-image {
+  width: $undo-image-width;
+  padding: compute_css_to_center_image($undo-image-width);
+}
+
+#blank-image {
+  width: $blank-image-width;
+  padding: compute_css_to_center_image($blank-image-width);
+}
+
 .drawing-section {
-  margin: 20px;
-  border: 1px solid #ababab;
-  width: max-content;
+  justify-content: center;
+  max-width: $max-width-of-drawing-section;
+  border: $light-grey-border;
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
 
   canvas {
     cursor: crosshair;
+    border-left: $grey-border !important;
+    border-right: $grey-border !important;
   }
 
   .stage {
-    margin: 20px;
+    width: $stage-width;
+    margin: $twenty-pixels;
+    justify-content: center;
+    background-image: linear-gradient(to right, white, white, grey);
+
+    /**
+     * This is the canvas, which is normally transparent. The gradient in the background
+     * to signify which side is being drawn leaks into the background of the canvas.
+     */
+    .konvajs-content {
+      background-color: white;
+    }
   }
 
   .tools {
+    width: $full-width-percentage;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 20px;
+    justify-content: center;
+    margin: $twenty-pixels;
 
-    .brushes {
-      margin-bottom: 25px;
-      display: flex;
-
-      .brush-box {
-        height: 50px;
-        width: 50px;
-        margin: 0 5px;
-        position: relative;
-        border: 1px solid #ccc;
-        cursor: pointer;
-
-        .size-button {
-          border-radius: 100px;
-          border: none;
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          -ms-transform: translate(-50%, -50%);
-          transform: translate(-50%, -50%);
-        }
+    .github-picker {
+      div {
+        // Removes the arrow above the picker
+        border-width: 0px !important;
       }
-      .brush-box.selected {
-        border: 1px solid #666;
+      margin: 0px 10px 0px 10px;
+    }
+    .brushes {
+      display: flex;
+      .size-button {
+        border-radius: $brush-border-radius;
+        border: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
       }
     }
   }

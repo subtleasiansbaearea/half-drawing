@@ -1,0 +1,20 @@
+$black-border: 1px solid #666;
+
+.lobby-page {
+  justify-content: center;
+  display: flex;
+  flex: wrap;
+  max-width: 1400px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  .lobby-colummn:first-of-type {
+  	margin-right: 20px;
+  }
+  .lobby-colummn:last-of-type {
+  	margin-left: 20px;
+  }
+  .lobby-column {
+  	width: 40%;
+  	border: $black-border;
+  }  
+}

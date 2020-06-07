@@ -11,6 +11,7 @@ import _ from 'lodash';
 
 interface DrawingDisplayProps {
   width: number,
+  height: number,
   histories: Array<History>,
   timescale: number,
 }
@@ -21,7 +22,7 @@ interface DrawingDisplayProps {
  */
 function DrawingDisplay(props: DrawingDisplayProps) {
   const layerRef = useRef<Konva.Layer>(null);
-  const { width, histories } = props;
+  const { width, height, histories } = props;
   const canvasStyle = {
     border: "1px solid #ababab"
   };
@@ -93,7 +94,7 @@ function DrawingDisplay(props: DrawingDisplayProps) {
       <Stage
         style={canvasStyle}
         width={width}
-        height={width}
+        height={height}
       >
         <Layer ref={layerRef}>
         </Layer>
