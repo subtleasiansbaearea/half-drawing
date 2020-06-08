@@ -43,12 +43,12 @@ function DrawingComponent(props: DrawingComponentProps) {
 
   function drawLine() {
     if (!stageRef?.current || !layerRef?.current) return;
-    addLine(stageRef.current.getStage(), layerRef?.current, histories,
+    addLine(stageRef.current.getStage(), layerRef.current, histories,
       setHistories, "brush", color, brushWidth);
   }
   function eraseLine() {
     if (!stageRef?.current || !layerRef?.current) return;
-    addLine(stageRef?.current?.getStage(), layerRef?.current, histories,
+    addLine(stageRef.current.getStage(), layerRef.current, histories,
       setHistories, "erase");
   };
 
