@@ -25,6 +25,18 @@ const defaultProps: DisplayPageProps = {
         user_name: "Mavey",
         histories: TestHistories.HEART_RIGHT,
       },
+    },
+    {
+      left: {
+        user_id: 3,
+        user_name: "Kevin",
+        histories: TestHistories.HEART_LEFT,
+      },
+      right: {
+        user_id: 4,
+        user_name: "Michael",
+        histories: TestHistories.HEART_RIGHT,
+      },
     }
   ],
   width: 540,
