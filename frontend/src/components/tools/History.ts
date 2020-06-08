@@ -11,6 +11,17 @@ export interface History {
 
 export interface LineHistory extends History {
   points: Array<PointHistory>,
-  width: number;
-  color: string;
+  width: number,
+  color: string,
+}
+
+export interface Drawing {
+  user_id: number,
+  user_name: string,
+  histories: Array<History>,
+}
+
+export interface DrawingPair {
+  left: Drawing,
+  right: Drawing
 }
