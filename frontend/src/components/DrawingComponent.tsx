@@ -1,23 +1,26 @@
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
-import { GithubPicker, ColorResult } from 'react-color';
-import { Layer, Stage } from 'react-konva';
-import Konva from 'konva';
-import _ from 'lodash';
+import "../styles/DrawingComponent.scss";
 
-import addLine from './tools/Line'
 import * as ImageConstants from '../img/constants'
 
-import '../styles/DrawingComponent.scss';
+import { ColorResult, GithubPicker } from 'react-color';
+import { Layer, Stage } from "react-konva";
+import React, { useEffect, useRef, useState } from 'react';
+
+import DrawingDisplay from "./DrawingDisplay"
+import { History } from "./tools/History"
+import Konva from "konva";
+import _ from "lodash";
+import { addLine } from "./tools/Line"
 
 const BRUSH_WIDTHS = [4, 9, 16, 25, 36];
 const DEFAULT_BRUSH_WIDTH = 16;
 
-interface DrawingCanvasProps {
-  width?: number,
-  height?: number,
+interface DrawingComponentProps {
+  width: number,
+  height: number,
 }
 
-const defaultProps: DrawingCanvasProps = {
+const defaultProps: DrawingComponentProps = {
   width: 540,
   height: 540,
 }
@@ -26,32 +29,36 @@ const defaultProps: DrawingCanvasProps = {
  * React implementation of
  * https://medium.com/better-programming/how-to-make-a-whiteboard-app-with-react-konva-8766a532a39f
  */
-function DrawingCanvas(props: DrawingCanvasProps) {
+function DrawingComponent(props: DrawingComponentProps) {
   const stageRef = useRef<Stage>(null);
   const layerRef = useRef<Konva.Layer>(null);
-  // eslint-disable-next-line
-  const undoRef = useRef<HTMLButtonElement>(null);
-  // const [lines, setLines] = useState<Array<Konva.Line>>([]);
   const [brushWidth, setBrushWidth] = useState(DEFAULT_BRUSH_WIDTH);
   const [color, setColor] = useState("#ef740e");
+  const [histories, setHistories] = useState<Array<History>>([]);
 
-  const handleChangeComplete = (color: ColorResult, event: ChangeEvent<HTMLInputElement>) => {
+  function handleColorChange(color: ColorResult) {
     setColor(color.hex);
   }
 
   function drawLine() {
     if (!stageRef?.current || !layerRef?.current) return;
-    addLine(stageRef.current.getStage(), layerRef?.current,
-      "brush", color, brushWidth);
+    addLine(stageRef.current.getStage(), layerRef?.current, histories,
+      setHistories, "brush", color, brushWidth);
   }
   function eraseLine() {
     if (!stageRef?.current || !layerRef?.current) return;
-    addLine(stageRef?.current?.getStage(), layerRef?.current, "erase");
+    addLine(stageRef?.current?.getStage(), layerRef?.current, histories,
+      setHistories, "erase");
   };
+
+  useEffect(drawLine, [histories, brushWidth, color]);
 
   function clear() {
     layerRef.current?.destroyChildren();
     layerRef.current?.clear();
+
+    console.log(histories);
+    setHistories([...histories, { mode: "clear", startTime: Date.now() }]);
   }
 
   function undo() {
@@ -60,25 +67,24 @@ function DrawingCanvas(props: DrawingCanvasProps) {
     if (children.length) {
       children[children.length - 1].destroy();
     }
+    setHistories([...histories, { mode: "undo", startTime: Date.now() }]);
     layerRef.current.draw();
   }
 
   function keydownHandler(e: KeyboardEvent) {
-    if (e.ctrlKey && e.key === 'z') {
+    if (e.ctrlKey && e.key === "z") {
       _.debounce(undo, 500)();
     }
   }
 
   function onInit() {
-    drawLine();
+    if (layerRef?.current?.children.length === 0) {
+      drawLine();
+    }
     document.addEventListener("keydown", keydownHandler, false);
   }
 
-  useEffect(onInit);
-
-  const canvasStyle = {
-    border: "1px solid #ababab"
-  };
+  useEffect(onInit, []);
 
   const sizeSwatches: Array<JSX.Element> = [];
 
@@ -104,6 +110,11 @@ function DrawingCanvas(props: DrawingCanvasProps) {
       </div >
     )
   }
+
+  const canvasStyle = {
+    border: "1px solid #ababab"
+  };
+
   return (
     <>
       <div className="drawing-section">
@@ -122,7 +133,7 @@ function DrawingCanvas(props: DrawingCanvasProps) {
           <div className="brushes">
             {sizeSwatches}
           </div>
-          <GithubPicker onChangeComplete={handleChangeComplete} color={color} />
+          <GithubPicker onChangeComplete={handleColorChange} color={color} />
           <div className="black-border-box" onClick={eraseLine}>
             <img id="erase-image" src={ImageConstants.ERASER_ICON} alt="Eraser"></img>
           </div>
@@ -133,11 +144,17 @@ function DrawingCanvas(props: DrawingCanvasProps) {
             <img id="blank-image" src={ImageConstants.BLANK_PAGE_ICON} alt="Blank"></img>
           </div>
         </div>
+        <DrawingDisplay
+          width={props.width}
+          height={props.height}
+          histories={histories}
+          timescale={0.5}
+        />
       </div>
     </>
   );
 }
 
-DrawingCanvas.defaultProps = defaultProps;
+DrawingComponent.defaultProps = defaultProps;
 
-export default DrawingCanvas;
+export default DrawingComponent;
