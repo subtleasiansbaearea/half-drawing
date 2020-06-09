@@ -7,7 +7,6 @@ import React, { useRef } from 'react';
 import { drawLine, playLine } from './tools/Line'
 
 import Konva from 'konva';
-import _ from 'lodash';
 
 interface DrawingDisplayProps {
   width: number,
@@ -66,6 +65,7 @@ function DrawingDisplay(props: DrawingDisplayProps) {
   }
 
   function draw() {
+    console.log(histories);
     clear();
     if (!layerRef?.current || !histories.length) return;
     const layer = layerRef.current;
@@ -74,7 +74,7 @@ function DrawingDisplay(props: DrawingDisplayProps) {
     }
   }
 
-  function play(timescale: number) {
+  function play() {
     clear();
     if (!layerRef?.current || !histories.length) return;
     const layer = layerRef.current;
@@ -84,13 +84,13 @@ function DrawingDisplay(props: DrawingDisplayProps) {
       const timeDiff = history.startTime - startTime;
       console.log(timeDiff);
       setTimeout(
-        () => enactHistory(history, layer, timescale),
-        timeDiff * timescale);
+        () => enactHistory(history, layer, props.timescale),
+        timeDiff * props.timescale);
     }
   }
 
   return (
-    <div className="stage">
+    <div className="display-stage">
       <Stage
         style={canvasStyle}
         width={width}
@@ -102,7 +102,7 @@ function DrawingDisplay(props: DrawingDisplayProps) {
       <ButtonGroup className={"play-button"}>
         <Button
           variant="primary"
-          onClick={_.debounce(() => play(props.timescale), 300)}
+          onClick={play}
         >
           Play
         </Button>

@@ -6,6 +6,7 @@ import { ColorResult, GithubPicker } from 'react-color';
 import { Layer, Stage } from "react-konva";
 import React, { useEffect, useRef, useState } from 'react';
 
+import DisplayPage from "./DisplayPage"
 import DrawingDisplay from "./DrawingDisplay"
 import { History } from "./tools/History"
 import Konva from "konva";
@@ -42,12 +43,12 @@ function DrawingComponent(props: DrawingComponentProps) {
 
   function drawLine() {
     if (!stageRef?.current || !layerRef?.current) return;
-    addLine(stageRef.current.getStage(), layerRef?.current, histories,
+    addLine(stageRef.current.getStage(), layerRef.current, histories,
       setHistories, "brush", color, brushWidth);
   }
   function eraseLine() {
     if (!stageRef?.current || !layerRef?.current) return;
-    addLine(stageRef?.current?.getStage(), layerRef?.current, histories,
+    addLine(stageRef.current.getStage(), layerRef.current, histories,
       setHistories, "erase");
   };
 
@@ -144,6 +145,7 @@ function DrawingComponent(props: DrawingComponentProps) {
             <img id="blank-image" src={ImageConstants.BLANK_PAGE_ICON} alt="Blank"></img>
           </div>
         </div>
+        <DisplayPage />
         <DrawingDisplay
           width={props.width}
           height={props.height}
