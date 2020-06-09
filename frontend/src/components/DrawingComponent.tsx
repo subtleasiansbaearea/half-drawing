@@ -146,12 +146,14 @@ function DrawingComponent(props: DrawingComponentProps) {
           </div>
         </div>
       </div>
-      <DrawingDisplay
-        width={props.width}
-        height={props.height}
-        histories={histories}
-        timescale={0.5}
-      />
+      <div style={{ border: "solid black 1px", margin: 20 }}>
+        <DrawingDisplay
+          width={props.width}
+          height={props.height}
+          histories={histories}
+          timescale={0.5}
+        />
+      </div>
     </>
   );
 }
