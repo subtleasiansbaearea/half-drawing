@@ -146,14 +146,14 @@ function DrawingComponent(props: DrawingComponentProps) {
             <img id="blank-image" src={ImageConstants.BLANK_PAGE_ICON} alt="Blank"></img>
           </div>
         </div>
-        <DisplayPage />
-        <DrawingDisplay
-          width={props.width}
-          height={props.height}
-          histories={histories}
-          timescale={0.5}
-        />
       </div>
+      <DisplayPage />
+      <DrawingDisplay
+        width={props.width}
+        height={props.height}
+        histories={histories}
+        timescale={0.5}
+      />
     </>
   );
 }
