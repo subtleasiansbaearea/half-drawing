@@ -57,8 +57,6 @@ function DrawingComponent(props: DrawingComponentProps) {
   function clear() {
     layerRef.current?.destroyChildren();
     layerRef.current?.clear();
-
-    console.log(histories);
     setHistories([...histories, { mode: "clear", startTime: Date.now() }]);
   }
 
@@ -75,6 +73,9 @@ function DrawingComponent(props: DrawingComponentProps) {
   function keydownHandler(e: KeyboardEvent) {
     if (e.ctrlKey && e.key === "z") {
       _.debounce(undo, 500)();
+    }
+    if (e.ctrlKey && e.key === "l") {
+      _.debounce(() => console.log(histories), 1000);
     }
   }
 

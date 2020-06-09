@@ -65,7 +65,6 @@ function DrawingDisplay(props: DrawingDisplayProps) {
   }
 
   function draw() {
-    console.log(histories);
     clear();
     if (!layerRef?.current || !histories.length) return;
     const layer = layerRef.current;
@@ -82,7 +81,6 @@ function DrawingDisplay(props: DrawingDisplayProps) {
     console.log(histories);
     for (const history of histories) {
       const timeDiff = history.startTime - startTime;
-      console.log(timeDiff);
       setTimeout(
         () => enactHistory(history, layer, props.timescale),
         timeDiff * props.timescale);
