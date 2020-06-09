@@ -1,16 +1,20 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
+const ws = require('ws');
+const fs = require('fs');
+const https = require('https');
 const webSocketsServerPort = 8000;
-const webSocketServer = require('websocket').server;
+
 
 const {v4: uuidv4} = require('uuid')
-const util = require('util');
 
 const app = express();
 const port = process.env.PORT || 5000;
 
 const TWENTY_MINUTES_IN_MS = 1200000;
+
+
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -22,7 +26,22 @@ lobby objects have interface:
   players: [playerIds...]
 }
 */
-let lobbies = {}
+const lobbies = {};
+const clients = {};
+
+// Websocket logic start
+const wsServer = https.createServer(app);
+const wss = new ws.Server({ server: wsServer });
+wss.on('request', function(request) {
+  const userID = uuid();
+  console.log((new Date()) + ' Recieved a new connection from origin ' + request.origin + '.');
+  // You can rewrite this part of the code to accept only the requests from allowed origin
+  const connection = request.accept(null, request.origin);
+  clients[userID] = connection;
+  console.log('connected: ' + userID + ' in ' + Object.getOwnPropertyNames(clients))
+});
+// Websocket logic end
+
 
 const addNewLobby = () => {
   const id = uuidv4().slice(-6);
@@ -45,6 +64,8 @@ const addPlayerToLobby = (id) => {
 
 const endLobby = (id) => delete lobbies[id];
 
+
+// ### Endpoints Start
 app.post('/lobby/init', (req, res) => {
   let lobby = addNewLobby();
   res.status(200).send({id: lobby});
@@ -93,4 +114,7 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
+// Endpoints End
+
 app.listen(port, () => console.log(`Listening on port ${port}`));
+app.listen(webSocketsServerPort, )
