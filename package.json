@@ -15,7 +15,8 @@
   "dependencies": {
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
-    "uuid": "^8.1.0"
+    "uuid": "^8.1.0",
+    "websocket": "^1.0.31"
   },
   "devDependencies": {
     "concurrently": "^4.0.1"

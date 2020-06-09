@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
+const webSocketsServerPort = 8000;
+const webSocketServer = require('websocket').server;
 
 const {v4: uuidv4} = require('uuid')
 const util = require('util');
@@ -23,7 +25,7 @@ lobby objects have interface:
 let lobbies = {}
 
 const addNewLobby = () => {
-  const id = uuidv4();
+  const id = uuidv4().slice(-6);
   const timerId = setTimeout(() => {
     delete lobbies[id]
   }, TWENTY_MINUTES_IN_MS);
@@ -43,13 +45,22 @@ const addPlayerToLobby = (id) => {
 
 const endLobby = (id) => delete lobbies[id];
 
-app.get('/lobby/init', (req, res) => {
+app.post('/lobby/init', (req, res) => {
   let lobby = addNewLobby();
   res.status(200).send({id: lobby});
 });
 
-app.get('/lobby/addPlayer', (req, res) => {
-  const { id } = req.query;
+app.post('/lobby/addPlayer', (req, res) => {
+  const {body} = req;
+  if (!body) {
+    res.status(404).send({error: 'Did not receive POST body'});
+    return;
+  }
+  const { id } = body;
+  if (!id) {
+    res.status(404).send({error: `Expected id, but received ${id}`});
+    return;
+  }
   const {newPlayerId, error} = addPlayerToLobby(id)
   if (error) {
     res.status(404).send({error});
@@ -57,8 +68,13 @@ app.get('/lobby/addPlayer', (req, res) => {
   res.status(200).send({playerId: newPlayerId, players: lobbies[id].players});
 });
 
-app.get('/lobby/end', (req, res) => {
-  const { id } = req.query;
+app.delete('/lobby/end', (req, res) => {
+  const {body} = req;
+  if (!body) {
+    res.status(404).send({error: 'Did not receive DELETE body'});
+    return;
+  }
+  const { id } = body;
   endLobby(id);
   res.status(200).send({result: `Closed lobby with id: ${id}`})
 })
