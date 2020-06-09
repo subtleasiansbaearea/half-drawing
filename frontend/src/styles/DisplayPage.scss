@@ -1,5 +1,39 @@
-.display-page .drawing {
-    display: flex;
-    flex-direction: row;
-    scale: 50%;
+.display-page {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  max-width: 1920px;
+
+  .display-stage {
+    transform: scale(0.5);
+    transform-origin: top left;
+  }
+
+  .drawing-display {
+    margin: 20px;
+
+    .drawing {
+      border: solid grey 2px;
+      display: flex;
+      flex-direction: row;
+
+      .left-drawing,
+      .right-drawing {
+        width: 270px;
+        height: 270px;
+      }
+
+      .center-column {
+        border: dotted grey 1px;
+      }
+    }
+
+    .labels {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+      width: 540px;
+    }
+  }
 }
