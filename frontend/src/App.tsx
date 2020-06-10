@@ -25,6 +25,7 @@ const App = () => {
           <Link to="/game/:gameID">Game</Link>
         </span>
       </Router>
+
     </div>
   );
 };

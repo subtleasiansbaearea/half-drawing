@@ -61,6 +61,10 @@ $twenty-pixels: 20px;
   flex-direction: row;
   flex-wrap: wrap;
 
+  border-color: blue;
+  border-width: 5px;
+  border-style: solid;
+
   canvas {
     cursor: crosshair;
     border-left: $grey-border !important;
