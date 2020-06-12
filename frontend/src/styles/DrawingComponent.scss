@@ -94,6 +94,8 @@ $twenty-pixels: 20px;
         border-width: 0px !important;
       }
       margin: 0px 10px 0px 10px;
+      // Bootstrap CSS fucks this shit up so we have to unfuck it
+      box-sizing: inherit;
     }
     .brushes {
       display: flex;
