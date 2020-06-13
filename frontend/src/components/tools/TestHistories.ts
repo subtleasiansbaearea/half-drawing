@@ -12,7 +12,6 @@ export function getHeartWithNames(
   firstName: string,
   secondName: string,
 ): DrawingPair {
-  const tempDrawingPairId = 'drawingId';
   return {
     drawingPairId: "drawingPairId",
     leftPlayerId: "firstplayer",
