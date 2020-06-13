@@ -1,4 +1,4 @@
-import { History, LineHistory, PointHistory } from './History'
+import { History, LineHistory, PointHistory } from "../../../../types/History";
 
 import Konva from "konva";
 

@@ -1,4 +1,5 @@
-import { DrawingPair, LineHistory } from "./History"
+import { DrawingPair } from "../../../../types/Types"
+import { LineHistory } from "../../../../types/History";
 
 /**
  * Get a drawing pair of a heart
@@ -8,20 +9,23 @@ import { DrawingPair, LineHistory } from "./History"
  * @param secondIndex 
  */
 export function getHeartWithNames(
-  firstName: string, firstIndex: number,
-  secondName: string, secondIndex: number
+  firstName: string,
+  secondName: string,
 ): DrawingPair {
+  const tempDrawingPairId = 'drawingId';
   return {
+    drawingPairId: "drawingPairId",
+    leftPlayerId: "firstplayer",
+    rightPlayerId: "secondplayer",
     left: {
-      user_id: firstIndex,
-      user_name: firstName,
+      playerName: firstName,
       histories: HEART_LEFT,
     },
     right: {
-      user_id: secondIndex,
-      user_name: secondName,
+      playerName: secondName,
       histories: HEART_RIGHT,
     },
+    prompt: "Draw love"
   };
 }
 

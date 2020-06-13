@@ -1,7 +1,7 @@
 import '../styles/DrawingComponent.scss';
 
 import { Button, ButtonGroup } from 'react-bootstrap';
-import { History, LineHistory } from './tools/History';
+import { History, LineHistory } from '../../../types/History';
 import { Layer, Stage } from 'react-konva';
 import React, { useEffect, useRef } from 'react';
 import { drawLine, playLine } from './tools/Line'
@@ -11,7 +11,7 @@ import Konva from 'konva';
 interface DrawingDisplayProps {
   width: number,
   height: number,
-  histories: Array<History>,
+  histories?: Array<History>,
   timescale: number,
 }
 
@@ -63,7 +63,7 @@ function DrawingDisplay(props: DrawingDisplayProps) {
 
   function draw() {
     clear();
-    if (!layerRef?.current || !histories.length) return;
+    if (!layerRef?.current || !histories || !histories.length) return;
     const layer = layerRef.current;
     for (let history of histories) {
       enactHistory(history, layer, 0);
@@ -72,7 +72,7 @@ function DrawingDisplay(props: DrawingDisplayProps) {
 
   function play() {
     clear();
-    if (!layerRef?.current || !histories.length) return;
+    if (!layerRef?.current || !histories || !histories.length) return;
     const layer = layerRef.current;
     const startTime = histories[0].startTime;
     console.log(histories);

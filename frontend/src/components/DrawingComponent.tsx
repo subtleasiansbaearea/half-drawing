@@ -7,7 +7,7 @@ import { Layer, Stage } from "react-konva";
 import React, { useEffect, useRef, useState } from 'react';
 
 import DrawingDisplay from "./DrawingDisplay"
-import { History } from "./tools/History"
+import { History } from "../../../types/History"
 import Konva from "konva";
 import _ from "lodash";
 import { addLine } from "./tools/Line"

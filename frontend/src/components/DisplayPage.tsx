@@ -3,7 +3,7 @@ import '../styles/DisplayPage.scss';
 import * as TestHistories from "./tools/TestHistories";
 
 import DrawingDisplay from './DrawingDisplay';
-import { DrawingPair } from "./tools/History"
+import { DrawingPair } from "../../../types/Types"
 import React from 'react';
 
 interface DisplayPageProps {
@@ -15,11 +15,11 @@ interface DisplayPageProps {
 
 const defaultProps: DisplayPageProps = {
   drawingPairs: [
-    TestHistories.getHeartWithNames("Henry", 1, "Mavey", 2),
-    TestHistories.getHeartWithNames("Kevin", 3, "Michael", 4),
-    TestHistories.getHeartWithNames("Michael", 4, "Henry", 1),
-    TestHistories.getHeartWithNames("Mavey", 2, "Kevin", 3),
-    TestHistories.getHeartWithNames("Michael", 4, "Kevin", 3),
+    TestHistories.getHeartWithNames("Henry", "Mavey"),
+    TestHistories.getHeartWithNames("Kevin", "Michael"),
+    TestHistories.getHeartWithNames("Michael", "Henry"),
+    TestHistories.getHeartWithNames("Mavey", "Kevin"),
+    TestHistories.getHeartWithNames("Michael", "Kevin"),
   ],
   width: 540,
   height: 540,
@@ -37,7 +37,7 @@ function DisplayPage(props: DisplayPageProps) {
             <DrawingDisplay
               width={width}
               height={height}
-              histories={pair.left.histories}
+              histories={pair.left?.histories}
               timescale={0.5}
             />
           </div>
@@ -46,14 +46,14 @@ function DisplayPage(props: DisplayPageProps) {
             <DrawingDisplay
               width={width}
               height={height}
-              histories={pair.right.histories}
+              histories={pair.right?.histories}
               timescale={0.5}
             />
           </div>
         </div>
         <div className={"labels"}>
-          <div>{pair.left.user_name}</div>
-          <div>{pair.right.user_name}</div>
+          <div>{pair.left?.playerName}</div>
+          <div>{pair.right?.playerName}</div>
         </div>
       </div>
     );
