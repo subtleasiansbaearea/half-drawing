@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link, BrowserRouter as Router, Route } from 'react-router-dom';
 
 import '../styles/HomePage.scss';
 
@@ -6,7 +7,8 @@ const GameNotFoundPage = () => {
   return (
     <>
     	<div className="home-wrapper">
-	      <span className="name-of-game">Whoops! Can't find that game.</span>
+	      <h1 className="name-of-game">Whoops!</h1>
+	      <h2>We can't find this game. Please click <Link to="/">here</Link> to return to the home page.</h2>
 	      <h3>
 	        <span className="created-by">Kevin Tang, Michael Owens, Mavey Ma. 2020 SABA Hackathon.</span>
 	      </h3>

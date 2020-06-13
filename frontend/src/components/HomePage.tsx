@@ -9,7 +9,7 @@ const HomePage = () => {
   return (
   <>
     <div className="home-wrapper">
-      <span className="name-of-game">Biscuits and Gravy</span>
+      <h1 className="name-of-game">Biscuits and Gravy</h1>
       {<ScreenNameForm/>}
       <h3>
         <span className="created-by">Kevin Tang, Michael Owens, Mavey Ma. 2020 SABA Hackathon.</span>
