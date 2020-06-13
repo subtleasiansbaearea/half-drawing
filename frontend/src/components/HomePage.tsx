@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { useForm } from "react-hook-form";
 import { Button } from 'react-bootstrap';
 
-
 import '../styles/HomePage.scss';
 
 const HomePage = () => {
@@ -11,7 +10,7 @@ const HomePage = () => {
   <>
     <div className="home-wrapper">
       <span className="name-of-game">Biscuits and Gravy</span>
-      <ScreenNameForm/>
+      {<ScreenNameForm/>}
       <h3>
         <span className="created-by">Kevin Tang, Michael Owens, Mavey Ma. 2020 SABA Hackathon.</span>
       </h3>
