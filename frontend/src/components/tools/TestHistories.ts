@@ -1,4 +1,29 @@
-import { LineHistory } from "./History"
+import { DrawingPair, LineHistory } from "./History"
+
+/**
+ * Get a drawing pair of a heart
+ * @param firstName 
+ * @param firstIndex 
+ * @param secondName 
+ * @param secondIndex 
+ */
+export function getHeartWithNames(
+  firstName: string, firstIndex: number,
+  secondName: string, secondIndex: number
+): DrawingPair {
+  return {
+    left: {
+      user_id: firstIndex,
+      user_name: firstName,
+      histories: HEART_LEFT,
+    },
+    right: {
+      user_id: secondIndex,
+      user_name: secondName,
+      histories: HEART_RIGHT,
+    },
+  };
+}
 
 export const HEART_LEFT: Array<LineHistory> = [
   {

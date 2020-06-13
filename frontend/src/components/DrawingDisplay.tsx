@@ -3,7 +3,7 @@ import '../styles/DrawingComponent.scss';
 import { Button, ButtonGroup } from 'react-bootstrap';
 import { History, LineHistory } from './tools/History';
 import { Layer, Stage } from 'react-konva';
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { drawLine, playLine } from './tools/Line'
 
 import Konva from 'konva';
@@ -22,9 +22,6 @@ interface DrawingDisplayProps {
 function DrawingDisplay(props: DrawingDisplayProps) {
   const layerRef = useRef<Konva.Layer>(null);
   const { width, height, histories } = props;
-  const canvasStyle = {
-    border: "1px solid #ababab"
-  };
 
   function clear() {
     layerRef.current?.destroyChildren();
@@ -65,7 +62,6 @@ function DrawingDisplay(props: DrawingDisplayProps) {
   }
 
   function draw() {
-    console.log(histories);
     clear();
     if (!layerRef?.current || !histories.length) return;
     const layer = layerRef.current;
@@ -82,17 +78,17 @@ function DrawingDisplay(props: DrawingDisplayProps) {
     console.log(histories);
     for (const history of histories) {
       const timeDiff = history.startTime - startTime;
-      console.log(timeDiff);
       setTimeout(
         () => enactHistory(history, layer, props.timescale),
         timeDiff * props.timescale);
     }
   }
 
+  useEffect(draw, []);
   return (
     <div className="display-stage">
       <Stage
-        style={canvasStyle}
+        className={"display-canvas-container"}
         width={width}
         height={height}
       >
