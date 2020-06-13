@@ -5,6 +5,9 @@ nice to have:
 [] - make it responsive
 [] - clean up code
 
+## About
+[Node.js](https://expressjs.com/en/4x/api.html#app) backend, [React](https://reactjs.org/docs/react-api.html) frontend
+
 
 ## Project Structure
 - root
