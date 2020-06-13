@@ -1,12 +1,15 @@
 import './../styles/GamePage.scss';
 
-import React, { useEffect, useRef, useState } from 'react';
+import * as Transport from '../types/Transport';
+
+import { Drawing, DrawingPair, GAME_STATE } from '../types/Types';
+import React, { useState } from 'react';
 
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import DisplayPage from './DisplayPage';
 import DrawingPage from './DrawingPage';
-import { GAME_STATE } from '../types/Types'
+import { History } from '../types/History';
 import LobbyPage from './LobbyPage';
 
 //TODO make a call to database
@@ -24,33 +27,110 @@ const DRAWING_HEIGHT = 540;
 
 const GamePage = (match: Route) => {
   const [gameState, setGameState] = useState(GAME_STATE.LOBBY);
+  const [prompt, setPrompt] = useState('');
+  const [playerName, setPlayerName] = useState('');
+  const [playerId, setPlayerId] = useState('');
+  const [drawingPairId, setDrawingPairId] = useState('');
+  const [drawingPairs, setDrawingPairs] = useState<Array<DrawingPair>>([]);
+  const [leftDrawing, setLeftDrawing] =
+    useState<Drawing | undefined>(undefined);
   const {
     match: {
       params: { gameId }
     }
   } = match;
-  let Component;
 
+  function handleCommand(command: Transport.ServerCommand) {
+    switch (command.gameState) {
+      case GAME_STATE.LOBBY:
+        // do nothing
+        break;
+      case GAME_STATE.PHASE_ONE:
+        handlePhaseOneCommand(command as Transport.PhaseOneCommand);
+        break;
+      case GAME_STATE.PHASE_TWO:
+        handlePhaseTwoCommand(command as Transport.PhaseTwoCommand);
+        break;
+      case GAME_STATE.DISPLAY:
+        handleDisplayCommand(command as Transport.DisplayCommand)
+        break;
+    }
+    setGameState(command.gameState);
+  }
+
+  function handlePhaseOneCommand(command: Transport.PhaseOneCommand) {
+    const { prompt, drawingPairId, playerId } = command;
+    setPrompt(prompt);
+    setDrawingPairId(drawingPairId);
+    setPlayerId(playerId);
+  }
+
+  function handlePhaseTwoCommand(command: Transport.PhaseTwoCommand) {
+    const { prompt, drawingPairId, leftDrawing } = command;
+    setPrompt(prompt);
+    setDrawingPairId(drawingPairId);
+    setLeftDrawing(leftDrawing);
+  }
+
+  function handleDisplayCommand(command: Transport.DisplayCommand) {
+    const { drawingPairs } = command;
+    setDrawingPairs(drawingPairs);
+  }
+
+  function sendResponse(response: Transport.ClientResponse) {
+    console.log(JSON.stringify(response));
+  }
+
+  function createAndSendDrawing(histories: Array<History>) {
+    const drawing: Drawing = {
+      histories: histories,
+      playerName: playerName,
+    }
+
+    const response: Transport.DrawingResponse = {
+      gameId: gameId,
+      gameState: gameState,
+      drawing: drawing,
+      drawingPairId: drawingPairId,
+      playerId: playerId,
+    }
+
+    sendResponse(response);
+  }
+
+  let Component;
   switch (gameState) {
     case GAME_STATE.LOBBY:
-      Component = (<LobbyPage />);
+      Component = (<LobbyPage
+        updateName={setPlayerName}
+        setReady={() => console.log('ready')}
+      />);
       break;
     case GAME_STATE.PHASE_ONE:
       Component = (<DrawingPage
+        prompt={prompt}
         width={DRAWING_HEIGHT}
         height={DRAWING_HEIGHT}
         isLeft={true}
+        sendDrawing={createAndSendDrawing}
       />);
       break;
     case GAME_STATE.PHASE_TWO:
       Component = (<DrawingPage
+        prompt={prompt}
         width={DRAWING_HEIGHT}
         height={DRAWING_HEIGHT}
         isLeft={false}
+        sendDrawing={createAndSendDrawing}
+        drawing={leftDrawing}
       />);
       break;
     case GAME_STATE.DISPLAY:
-      Component = (<DisplayPage />);
+      Component = (<DisplayPage
+        drawingPairs={drawingPairs}
+        width={DRAWING_HEIGHT}
+        height={DRAWING_HEIGHT}
+      />);
       break;
   }
 
@@ -58,16 +138,28 @@ const GamePage = (match: Route) => {
     <div className={"game-page"}>
       <div>The game ID is {gameId}</div>
       <ButtonGroup>
-        <Button variant="primary" onClick={() => setGameState(GAME_STATE.LOBBY)}>
+        <Button
+          variant="primary"
+          onClick={() => setGameState(GAME_STATE.LOBBY)}
+        >
           Lobby
         </Button>
-        <Button variant="primary" onClick={() => setGameState(GAME_STATE.PHASE_ONE)}>
+        <Button
+          variant="primary"
+          onClick={() => setGameState(GAME_STATE.PHASE_ONE)}
+        >
           Phase 1
         </Button>
-        <Button variant="primary" onClick={() => setGameState(GAME_STATE.PHASE_TWO)}>
+        <Button
+          variant="primary"
+          onClick={() => setGameState(GAME_STATE.PHASE_TWO)}
+        >
           Phase 2
         </Button>
-        <Button variant="primary" onClick={() => setGameState(GAME_STATE.DISPLAY)}>
+        <Button
+          variant="primary"
+          onClick={() => setGameState(GAME_STATE.DISPLAY)}
+        >
           Display
         </Button>
       </ButtonGroup>
