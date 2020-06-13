@@ -10,22 +10,16 @@ body {
 }
 
 .home-wrapper {
+  display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  display: flex;
   color: white;
-  // border-color: skyblue;
-  // border-width: 5px;
-  // border-style: solid;
 }
 
 .name-of-game {
   font-size: 7vw;
   color: white;
   margin-top: 5%;
-  // border-color: purple;
-  // border-width: 5px;
-  // border-style: solid;
 }
 
 .placeholder {
@@ -55,10 +49,9 @@ input {
   margin: 10px;
   border: 0;
   outline: 0;
-  width: 300px;
+  width: 50%;
   border-bottom: 1px solid white;
 }
-
 
 .created-by {
   color:white;

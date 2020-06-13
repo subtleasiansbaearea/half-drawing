@@ -12,7 +12,7 @@ const HomePage = () => {
       <h1 className="name-of-game">Biscuits and Gravy</h1>
       <ScreenNameForm/>
       <h3>
-        <span className="created-by">Kevin Tang, Michael Owens, Mavey Ma. 2020 SABA Hackathon.</span>
+        <span className="created-by">Kevin Tang, Michael Owens, Mavey Ma, Henry Ling. 2020 SABA Hackathon.</span>
       </h3>
     </div>
   </>
@@ -32,13 +32,10 @@ const submitButtonHandler = () => {
   fetch('http://localhost:8000/lobby/init/', {
     method: 'POST',
   })
-  .then(data => data.json()) //The result is <Promise>
-  //Resolve the promise using `then`
+  .then(data => data.json())
   .then((data:createLobbyResponse) => {
-   // ES6, back ticks are called string templates that allow variable insertion into strings
-    console.log(`My lobby ID is ${data.id}!`);
     window.location.pathname = `game/${data.id}`;
-  });
+  })
 }
 
 const ScreenNameForm = () => {
