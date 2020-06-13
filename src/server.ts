@@ -24,14 +24,14 @@ const games: {[key: string]: Game} = {};
 const clients = {};
 
 // Websocket logic start
-const wsServer = https.createServer(app);
+const wsServer = new ws.Server({ port: 8080 })
 const wss = new ws.Server({ server: wsServer });
-wss.on('request', function (request) {
+wss.on('request', function (request: any ) { // TODO: fix type
   const userID = uuidv4();
   console.log((new Date()) + ' Recieved a new connection from origin ' + request.origin + '.');
   // You can rewrite this part of the code to accept only the requests from allowed origin
   const connection = request.accept(null, request.origin);
-  clients[userID] = connection;
+  // clients[userID] = connection;
   console.log('connected: ' + userID + ' in ' + Object.getOwnPropertyNames(clients))
 });
 // Websocket logic end
@@ -43,29 +43,30 @@ const addNewLobby = () => {
     delete games[id]
   }, TWENTY_MINUTES_IN_MS);
 
-  games[id] = { timerId, players: [0] }
+  // TODO: Fix type
+  // games[id] = { timerId: timerId, players: [0] }
   return id;
 }
 
-const addPlayerToLobby = (id) => {
+const addPlayerToLobby = (id: any) => {
   if (games[id]) {
     const newPlayerId = games[id].players.length;
-    games[id].players.push(newPlayerId);
+    // games[id].players.push(newPlayerId); // FIXME
     return { newPlayerId };
   }
   return { error: `lobby ${id} does not exist` }
 }
 
-const endLobby = (id) => delete games[id];
+const endLobby = (id: any) => delete games[id];
 
 
 // ### Endpoints Start
-app.post('/lobby/init', (req, res) => {
+app.post('/lobby/init', (req: any, res: any) => {
   let lobby = addNewLobby();
   res.status(200).send({ id: lobby });
 });
 
-app.post('/lobby/addPlayer', (req, res) => {
+app.post('/lobby/addPlayer', (req: any, res: any) => {
   const { body } = req;
   if (!body) {
     res.status(404).send({ error: 'Did not receive POST body' });
@@ -83,7 +84,7 @@ app.post('/lobby/addPlayer', (req, res) => {
   res.status(200).send({ playerId: newPlayerId, players: games[id].players });
 });
 
-app.delete('/lobby/end', (req, res) => {
+app.delete('/lobby/end', (req: any, res: any) => {
   const { body } = req;
   if (!body) {
     res.status(404).send({ error: 'Did not receive DELETE body' });
@@ -94,7 +95,7 @@ app.delete('/lobby/end', (req, res) => {
   res.status(200).send({ result: `Closed lobby with id: ${id}` })
 })
 
-app.get('/lobby/all', (req, res) => {
+app.get('/lobby/all', (req: any, res: any) => {
   res.send({ games: Object.keys(games) });
 });
 
@@ -103,7 +104,7 @@ if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../frontend/build')));
 
   // Handle React routing, return all requests to React app
-  app.get('/', function (req, res) {
+  app.get('/', function (req: any, res: any) {
     res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
   });
 }
