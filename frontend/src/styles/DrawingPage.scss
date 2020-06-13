@@ -3,7 +3,7 @@ $grey-border: 1px solid #e8e8e8;
 $light-grey-border: 1px solid #ababab;
 $black-border: 1px solid #666;
 
-$max-width-of-drawing-section: 1400px;
+$max-width-of-drawing-section: 1300px;
 $full-width-percentage: 100%;
 
 $brush-border-radius: 100px;
@@ -36,49 +36,57 @@ $twenty-pixels: 20px;
 .black-border-box {
   @extend .square-box;
   border: $black-border;
-}
-
-#erase-image {
-  width: $erase-image-width;
-  padding: compute_css_to_center_image($erase-image-width);
-}
-
-#undo-image {
-  width: $undo-image-width;
-  padding: compute_css_to_center_image($undo-image-width);
-}
-
-#blank-image {
-  width: $blank-image-width;
-  padding: compute_css_to_center_image($blank-image-width);
+  img {
+    padding: 10%;
+    width: 100%;
+    height: 100%;
+  }
 }
 
 .drawing-section {
   justify-content: center;
   max-width: $max-width-of-drawing-section;
+  margin: auto;
   border: $light-grey-border;
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+  flex-direction: column;
 
-  canvas {
-    cursor: crosshair;
-    border-left: $grey-border !important;
-    border-right: $grey-border !important;
+  .prompt {
+    font-size: 32px;
+    text-align: center;
+    margin-top: 20px;
   }
-
   .stage {
-    width: $stage-width;
-    margin: $twenty-pixels;
-    justify-content: center;
-    background-image: linear-gradient(to right, white, white, grey);
+    margin: 20px auto;
+    max-width: $stage-width;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
 
-    /**
-     * This is the canvas, which is normally transparent. The gradient in the background
-     * to signify which side is being drawn leaks into the background of the canvas.
-     */
-    .konvajs-content {
+    .active-stage,
+    .passive-stage {
+      border: $light-grey-border;
+    }
+
+    .active-stage {
+      canvas {
+        cursor: crosshair;
+      }
       background-color: white;
+    }
+    .passive-stage {
+      background-color: white;
+      background-image: linear-gradient(
+          45deg,
+          lightgrey 25%,
+          transparent 25%,
+          transparent 75%,
+          lightgrey 75%,
+          lightgrey
+        ),
+        linear-gradient(45deg, lightgrey 25%, transparent 25%, transparent 75%, lightgrey 75%, lightgrey);
+      background-size: 60px 60px;
+      background-position: 0 0, 30px 30px;
     }
   }
 
@@ -86,6 +94,7 @@ $twenty-pixels: 20px;
     width: $full-width-percentage;
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
     margin: $twenty-pixels;
 
     .github-picker {
@@ -93,8 +102,8 @@ $twenty-pixels: 20px;
         // Removes the arrow above the picker
         border-width: 0px !important;
       }
-      width: 214px !important;
-      margin: 0px 10px 0px 10px;
+      width: 212px !important;
+      margin: -4px 10px 0px 10px;
       // Bootstrap CSS fucks this shit up so we have to unfuck it
       box-sizing: inherit;
     }
@@ -108,6 +117,15 @@ $twenty-pixels: 20px;
         left: 50%;
         -ms-transform: translate(-50%, -50%);
         transform: translate(-50%, -50%);
+      }
+    }
+
+    .control-buttons {
+      display: flex;
+      .btn {
+        height: $box-dimension;
+        margin: 0px 5px 0px 5px;
+        position: relative;
       }
     }
   }

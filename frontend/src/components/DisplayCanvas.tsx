@@ -1,5 +1,3 @@
-import '../styles/DrawingComponent.scss';
-
 import { Button, ButtonGroup } from 'react-bootstrap';
 import { History, LineHistory } from '../types/History';
 import { Layer, Stage } from 'react-konva';
@@ -8,18 +6,21 @@ import { drawLine, playLine } from './tools/Line'
 
 import Konva from 'konva';
 
-interface DrawingDisplayProps {
+interface DisplayCanvasProps {
   width: number,
   height: number,
   histories?: Array<History>,
   timescale: number,
+  coverLeft?: boolean,
+  showButton?: boolean,
+  className?: string,
 }
 
 /**
  * React implementation of
  * https://medium.com/better-programming/how-to-make-a-whiteboard-app-with-react-konva-8766a532a39f
  */
-function DrawingDisplay(props: DrawingDisplayProps) {
+function DisplayCanvas(props: DisplayCanvasProps) {
   const layerRef = useRef<Konva.Layer>(null);
   const { width, height, histories } = props;
 
@@ -85,8 +86,21 @@ function DrawingDisplay(props: DrawingDisplayProps) {
   }
 
   useEffect(draw, []);
+
+  const playDrawButton = props.showButton ? (<ButtonGroup className={"play-button"}>
+    <Button
+      variant="primary"
+      onClick={play}
+    >
+      Play
+    </Button>
+    <Button variant="secondary" onClick={draw}>
+      Draw
+    </Button>
+  </ButtonGroup>) : null;
+
   return (
-    <div className="display-stage">
+    <div className={`display-stage ${props.className}`}>
       <Stage
         className={"display-canvas-container"}
         width={width}
@@ -95,20 +109,10 @@ function DrawingDisplay(props: DrawingDisplayProps) {
         <Layer ref={layerRef}>
         </Layer>
       </Stage>
-      <ButtonGroup className={"play-button"}>
-        <Button
-          variant="primary"
-          onClick={play}
-        >
-          Play
-        </Button>
-        <Button variant="secondary" onClick={draw}>
-          Draw
-        </Button>
-      </ButtonGroup>
-    </div>
+      {playDrawButton}
+    </div >
   );
 }
 
 
-export default DrawingDisplay;
+export default DisplayCanvas;

@@ -1,5 +1,7 @@
 .game-page {
-  h2 {
-    width: 100%;
+  width: 100%;
+  > div {
+    margin: auto;
+    text-align: center;
   }
 }

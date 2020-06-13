@@ -1,15 +1,18 @@
-import "../styles/DrawingComponent.scss";
+import '../styles/DrawingPage.scss';
 
 import * as ImageConstants from '../img/constants'
 
 import { ColorResult, GithubPicker } from 'react-color';
-import { Layer, Stage } from "react-konva";
+import { Layer, Stage } from 'react-konva';
 import React, { useEffect, useRef, useState } from 'react';
 
-import { History } from "../types/History"
-import Konva from "konva";
-import _ from "lodash";
-import { addLine } from "./tools/Line"
+import { Button } from 'react-bootstrap';
+import DisplayCanvas from './DisplayCanvas';
+import { Drawing } from '../types/Types';
+import { History } from '../types/History'
+import Konva from 'konva';
+import _ from 'lodash';
+import { addLine } from './tools/Line'
 
 const BRUSH_WIDTHS = [4, 9, 16, 25, 36];
 const DEFAULT_BRUSH_WIDTH = 16;
@@ -17,11 +20,14 @@ const DEFAULT_BRUSH_WIDTH = 16;
 interface DrawingComponentProps {
   width: number,
   height: number,
+  isLeft: boolean,
+  drawing?: Drawing,
 }
 
 const defaultProps: DrawingComponentProps = {
   width: 540,
   height: 540,
+  isLeft: true,
 }
 
 /**
@@ -32,8 +38,9 @@ function DrawingComponent(props: DrawingComponentProps) {
   const stageRef = useRef<Stage>(null);
   const layerRef = useRef<Konva.Layer>(null);
   const [brushWidth, setBrushWidth] = useState(DEFAULT_BRUSH_WIDTH);
-  const [color, setColor] = useState("#ef740e");
+  const [color, setColor] = useState('#ef740e');
   const [histories, setHistories] = useState<Array<History>>([]);
+  const { width, height, isLeft } = props;
 
   function handleColorChange(color: ColorResult) {
     setColor(color.hex);
@@ -42,12 +49,12 @@ function DrawingComponent(props: DrawingComponentProps) {
   function drawLine() {
     if (!stageRef?.current || !layerRef?.current) return;
     addLine(stageRef.current.getStage(), layerRef.current, histories,
-      setHistories, "brush", color, brushWidth);
+      setHistories, 'brush', color, brushWidth);
   }
   function eraseLine() {
     if (!stageRef?.current || !layerRef?.current) return;
     addLine(stageRef.current.getStage(), layerRef.current, histories,
-      setHistories, "erase");
+      setHistories, 'erase');
   };
 
   useEffect(drawLine, [histories, brushWidth, color]);
@@ -55,7 +62,7 @@ function DrawingComponent(props: DrawingComponentProps) {
   function clear() {
     layerRef.current?.destroyChildren();
     layerRef.current?.clear();
-    setHistories([...histories, { mode: "clear", startTime: Date.now() }]);
+    setHistories([...histories, { mode: 'clear', startTime: Date.now() }]);
   }
 
   function undo() {
@@ -64,15 +71,15 @@ function DrawingComponent(props: DrawingComponentProps) {
     if (children.length) {
       children[children.length - 1].destroy();
     }
-    setHistories([...histories, { mode: "undo", startTime: Date.now() }]);
+    setHistories([...histories, { mode: 'undo', startTime: Date.now() }]);
     layerRef.current.draw();
   }
 
   function keydownHandler(e: KeyboardEvent) {
-    if (e.ctrlKey && e.key === "z") {
+    if (e.ctrlKey && e.key === 'z') {
       _.debounce(undo, 500)();
     }
-    if (e.ctrlKey && e.key === "l") {
+    if (e.ctrlKey && e.key === 'l') {
       _.debounce(() => console.log(histories), 1000);
     }
   }
@@ -81,7 +88,7 @@ function DrawingComponent(props: DrawingComponentProps) {
     if (layerRef?.current?.children.length === 0) {
       drawLine();
     }
-    document.addEventListener("keydown", keydownHandler, false);
+    document.addEventListener('keydown', keydownHandler, false);
   }
 
   useEffect(onInit, []);
@@ -96,7 +103,7 @@ function DrawingComponent(props: DrawingComponentProps) {
       background: color,
     };
     const isSelected = size === brushWidth;
-    const brushBoxClassName = isSelected ? "black-border-box" : "grey-border-box";
+    const brushBoxClassName = isSelected ? 'black-border-box' : 'grey-border-box';
     sizeSwatches.push(
       <div
         key={size}
@@ -111,36 +118,52 @@ function DrawingComponent(props: DrawingComponentProps) {
     )
   }
 
-  const canvasStyle = {
-    border: "1px solid #ababab"
-  };
+  const ActiveStage = (<Stage
+    className={"active-stage"}
+    ref={stageRef}
+    width={width}
+    height={height}
+  >
+    <Layer ref={layerRef}>
+    </Layer>
+  </Stage>);
+
+  const PassiveStage = (<DisplayCanvas
+    className={"passive-stage"}
+    width={width}
+    height={height}
+    timescale={0.2}
+    coverLeft={true}
+    showButton={false}
+  />)
 
   return (
     <div className="drawing-section">
+      <div className="prompt">
+        Draw Biscuits and Gravy
+      </div>
       <div className="stage">
-        <Stage
-          style={canvasStyle}
-          ref={stageRef}
-          width={props.width}
-          height={props.height}
-        >
-          <Layer ref={layerRef}>
-          </Layer>
-        </Stage>
+        {isLeft ? ActiveStage : PassiveStage}
+        {isLeft ? PassiveStage : ActiveStage}
       </div>
       <div className="tools">
         <div className="brushes">
           {sizeSwatches}
         </div>
         <GithubPicker onChangeComplete={handleColorChange} color={color} />
-        <div className="black-border-box" onClick={eraseLine}>
-          <img id="erase-image" src={ImageConstants.ERASER_ICON} alt="Eraser"></img>
-        </div>
-        <div className="black-border-box" onClick={undo}>
-          <img id="undo-image" src={ImageConstants.UNDO_ICON} alt="Undo"></img>
-        </div>
-        <div className="black-border-box" onClick={clear}>
-          <img id="blank-image" src={ImageConstants.BLANK_PAGE_ICON} alt="Blank"></img>
+        <div className="control-buttons">
+          <div className="black-border-box" onClick={eraseLine}>
+            <img src={ImageConstants.ERASER_ICON} alt="Eraser"></img>
+          </div>
+          <div className="black-border-box" onClick={undo}>
+            <img src={ImageConstants.UNDO_ICON} alt="Undo"></img>
+          </div>
+          <div className="black-border-box" onClick={clear}>
+            <img src={ImageConstants.BLANK_PAGE_ICON} alt="Blank"></img>
+          </div>
+          <Button>
+            done?
+          </Button>
         </div>
       </div>
     </div>
