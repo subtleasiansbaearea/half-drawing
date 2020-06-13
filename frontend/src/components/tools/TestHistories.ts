@@ -1,5 +1,5 @@
-import { DrawingPair } from "../../../../types/Types"
-import { LineHistory } from "../../../../types/History";
+import { DrawingPair } from "../../types/Types"
+import { LineHistory } from "../../types/History";
 
 /**
  * Get a drawing pair of a heart

@@ -3,7 +3,7 @@ import '../styles/DisplayPage.scss';
 import * as TestHistories from "./tools/TestHistories";
 
 import DrawingDisplay from './DrawingDisplay';
-import { DrawingPair } from "../../../types/Types"
+import { DrawingPair } from "../types/Types"
 import React from 'react';
 
 interface DisplayPageProps {

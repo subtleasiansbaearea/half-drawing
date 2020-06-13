@@ -6,8 +6,7 @@ import { ColorResult, GithubPicker } from 'react-color';
 import { Layer, Stage } from "react-konva";
 import React, { useEffect, useRef, useState } from 'react';
 
-import DrawingDisplay from "./DrawingDisplay"
-import { History } from "../../../types/History"
+import { History } from "../types/History"
 import Konva from "konva";
 import _ from "lodash";
 import { addLine } from "./tools/Line"
@@ -117,44 +116,34 @@ function DrawingComponent(props: DrawingComponentProps) {
   };
 
   return (
-    <>
-      <div className="drawing-section">
-        <div className="stage">
-          <Stage
-            style={canvasStyle}
-            ref={stageRef}
-            width={props.width}
-            height={props.height}
-          >
-            <Layer ref={layerRef}>
-            </Layer>
-          </Stage>
-        </div>
-        <div className="tools">
-          <div className="brushes">
-            {sizeSwatches}
-          </div>
-          <GithubPicker onChangeComplete={handleColorChange} color={color} />
-          <div className="black-border-box" onClick={eraseLine}>
-            <img id="erase-image" src={ImageConstants.ERASER_ICON} alt="Eraser"></img>
-          </div>
-          <div className="black-border-box" onClick={undo}>
-            <img id="undo-image" src={ImageConstants.UNDO_ICON} alt="Undo"></img>
-          </div>
-          <div className="black-border-box" onClick={clear}>
-            <img id="blank-image" src={ImageConstants.BLANK_PAGE_ICON} alt="Blank"></img>
-          </div>
-        </div>
-      </div>
-      <div style={{ border: "solid black 1px", margin: 20 }}>
-        <DrawingDisplay
+    <div className="drawing-section">
+      <div className="stage">
+        <Stage
+          style={canvasStyle}
+          ref={stageRef}
           width={props.width}
           height={props.height}
-          histories={histories}
-          timescale={0.5}
-        />
+        >
+          <Layer ref={layerRef}>
+          </Layer>
+        </Stage>
       </div>
-    </>
+      <div className="tools">
+        <div className="brushes">
+          {sizeSwatches}
+        </div>
+        <GithubPicker onChangeComplete={handleColorChange} color={color} />
+        <div className="black-border-box" onClick={eraseLine}>
+          <img id="erase-image" src={ImageConstants.ERASER_ICON} alt="Eraser"></img>
+        </div>
+        <div className="black-border-box" onClick={undo}>
+          <img id="undo-image" src={ImageConstants.UNDO_ICON} alt="Undo"></img>
+        </div>
+        <div className="black-border-box" onClick={clear}>
+          <img id="blank-image" src={ImageConstants.BLANK_PAGE_ICON} alt="Blank"></img>
+        </div>
+      </div>
+    </div>
   );
 }
 

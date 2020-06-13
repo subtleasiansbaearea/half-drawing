@@ -1,5 +1,10 @@
+import './../styles/GamePage.scss';
+
+import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import DisplayPage from './DisplayPage';
-import DrawingComponent from './DrawingComponent';
+import DrawingPage from './DrawingPage';
+import { GAME_STATE } from '../types/Types'
 import LobbyPage from './LobbyPage';
 import React from 'react';
 
@@ -15,34 +20,33 @@ interface Route {
 }
 
 const GamePage = (match: Route) => {
-  const {
-    match: {
-      params: { gameID }
-    }
-  } = match;
+  let gameState = GAME_STATE.LOBBY;
+  let gameId = null
+  function setTempLobby() {
 
-  // Set a full width CSS temporarily just for debugging purposes
-  const FULL_WIDTH_CSS = { width: '100%' };
-  const SEPARATOR_CSS = { paddingBottom: '50px' };
+  }
 
   return (
-    <>
-      <div style={FULL_WIDTH_CSS}>The game ID is {gameID}</div>
-      <section style={SEPARATOR_CSS}>
-        <h2 style={FULL_WIDTH_CSS}>Lobby Page</h2>
-        <LobbyPage />
-      </section>
-      <section>
-        <h2 style={FULL_WIDTH_CSS}>Drawing Page</h2>
-        <DrawingComponent />
-      </section>
-      <section>
-        <h2 style={FULL_WIDTH_CSS}>Display Page</h2>
-        <DisplayPage />
-      </section>
-      <div style={FULL_WIDTH_CSS}>
-      </div>
-    </>
+    <div className={"game-page"}>
+      <div>The game ID is {gameId}</div>
+      <ButtonGroup>
+        <Button variant="primary" onClick={setTempLobby}>
+          Lobby
+        </Button>
+        <Button variant="primary" onClick={setTempLobby}>
+          Phase 1
+        </Button>
+        <Button variant="primary" onClick={setTempLobby}>
+          Phase 2
+        </Button>
+        <Button variant="primary" onClick={setTempLobby}>
+          Display
+        </Button>
+      </ButtonGroup>
+      <LobbyPage />
+      <DrawingPage />
+      <DisplayPage />
+    </div>
   );
 };
 
