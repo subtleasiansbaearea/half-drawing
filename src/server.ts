@@ -4,7 +4,8 @@ const path = require('path');
 const ws = require('ws');
 const https = require('https');
 const webSocketsServerPort = 8000;
-
+import {StartPhaseOneCommand} from '../frontend/src/types/Command';
+import {Game} from '../frontend/src/types/Types';
 
 const { v4: uuidv4 } = require('uuid')
 
@@ -18,14 +19,15 @@ const TWENTY_MINUTES_IN_MS = 1200000;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const lobbies = {};
+const prompts: string[] = ['Biscuits and gravy'];
+const games: {[key: string]: Game} = {};
 const clients = {};
 
 // Websocket logic start
 const wsServer = https.createServer(app);
 const wss = new ws.Server({ server: wsServer });
 wss.on('request', function (request) {
-  const userID = uuid();
+  const userID = uuidv4();
   console.log((new Date()) + ' Recieved a new connection from origin ' + request.origin + '.');
   // You can rewrite this part of the code to accept only the requests from allowed origin
   const connection = request.accept(null, request.origin);
@@ -38,23 +40,23 @@ wss.on('request', function (request) {
 const addNewLobby = () => {
   const id = uuidv4().slice(-6);
   const timerId = setTimeout(() => {
-    delete lobbies[id]
+    delete games[id]
   }, TWENTY_MINUTES_IN_MS);
 
-  lobbies[id] = { timerId, players: [0] }
+  games[id] = { timerId, players: [0] }
   return id;
 }
 
 const addPlayerToLobby = (id) => {
-  if (lobbies[id]) {
-    const newPlayerId = lobbies[id].players.length;
-    lobbies[id].players.push(newPlayerId);
+  if (games[id]) {
+    const newPlayerId = games[id].players.length;
+    games[id].players.push(newPlayerId);
     return { newPlayerId };
   }
   return { error: `lobby ${id} does not exist` }
 }
 
-const endLobby = (id) => delete lobbies[id];
+const endLobby = (id) => delete games[id];
 
 
 // ### Endpoints Start
@@ -78,7 +80,7 @@ app.post('/lobby/addPlayer', (req, res) => {
   if (error) {
     res.status(404).send({ error });
   }
-  res.status(200).send({ playerId: newPlayerId, players: lobbies[id].players });
+  res.status(200).send({ playerId: newPlayerId, players: games[id].players });
 });
 
 app.delete('/lobby/end', (req, res) => {
@@ -93,7 +95,7 @@ app.delete('/lobby/end', (req, res) => {
 })
 
 app.get('/lobby/all', (req, res) => {
-  res.send({ lobbies: Object.keys(lobbies) });
+  res.send({ games: Object.keys(games) });
 });
 
 if (process.env.NODE_ENV === 'production') {

@@ -14,10 +14,11 @@
     "start": "npm run serve",
     "serve": "node build/server.js",
     "heroku-postbuild": "cd frontend && npm install && npm install --only=dev --no-shrinkwrap && npm run build",
-    "watch-node": "nodemon dist/server.js",
+    "watch-node": "nodemon build/src/server.js",
     "watch-ts": "tsc -w"
   },
   "dependencies": {
+    "@types/node": "^14.0.13",
     "body-parser": "^1.18.3",
     "express": "^4.17.1",
     "https": "^1.0.0",
