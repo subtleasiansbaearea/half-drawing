@@ -1,10 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
-const ws = require('ws');
+const websocketService = require('./websocketService');
 const https = require('https');
-const webSocketsServerPort = 8000;
-import {StartPhaseOneCommand} from '../frontend/src/types/Command';
 import {Game} from '../frontend/src/types/Types';
 
 const { v4: uuidv4 } = require('uuid')
@@ -22,19 +20,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const prompts: string[] = ['Biscuits and gravy'];
 const games: {[key: string]: Game} = {};
 const clients = {};
-
-// Websocket logic start
-const wsServer = new ws.Server({ port: 8080 })
-const wss = new ws.Server({ server: wsServer });
-wss.on('request', function (request: any ) { // TODO: fix type
-  const userID = uuidv4();
-  console.log((new Date()) + ' Recieved a new connection from origin ' + request.origin + '.');
-  // You can rewrite this part of the code to accept only the requests from allowed origin
-  const connection = request.accept(null, request.origin);
-  // clients[userID] = connection;
-  console.log('connected: ' + userID + ' in ' + Object.getOwnPropertyNames(clients))
-});
-// Websocket logic end
 
 
 const addNewLobby = () => {
@@ -112,4 +97,3 @@ if (process.env.NODE_ENV === 'production') {
 // Endpoints End
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
-app.listen(webSocketsServerPort)

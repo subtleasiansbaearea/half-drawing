@@ -6,8 +6,20 @@ import { Link, Route, BrowserRouter as Router } from 'react-router-dom';
 import GameNotFoundPage from "./components/GameNotFoundPage"
 import GamePage from "./components/GamePage"
 import HomePage from "./components/HomePage"
-import React from 'react';
+import React, { useEffect } from 'react';
 
+import { w3cwebsocket as W3CWebSocket } from "websocket";
+var ws = new WebSocket('ws://localhost:40510');
+// event emmited when connected
+ws.onopen = function () {
+  console.log('websocket is connected ...')
+   // sending a send event to websocket server
+   ws.send('connected')
+  }
+  // event emmited when receiving message 
+  ws.onmessage = function (ev) {
+    console.log(ev);
+  }
 const App = () => {
   // Set a full width CSS temporarily just for debugging purposes
   const FULL_WIDTH_CSS = { width: '100%' };

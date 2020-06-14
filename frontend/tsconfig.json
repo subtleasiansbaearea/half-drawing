@@ -21,7 +21,7 @@
     "jsx": "react"
   },
   "exclude": [
-    "frontend"
+    "node_modules",
   ],
   "include": [
     "src",
