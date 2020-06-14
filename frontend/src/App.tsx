@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 import HomePage from "./components/HomePage"
 import GameNotFoundPage from "./components/GameNotFoundPage"

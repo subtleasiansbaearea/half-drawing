@@ -4,6 +4,7 @@ const path = require('path');
 const ws = require('ws');
 const https = require('https');
 const webSocketsServerPort = 8000;
+const cors = require('cors');
 
 
 const { v4: uuidv4 } = require('uuid')
@@ -14,7 +15,7 @@ const port = process.env.PORT || 5000;
 const TWENTY_MINUTES_IN_MS = 1200000;
 
 
-
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -60,7 +61,7 @@ const endLobby = (id) => delete lobbies[id];
 // ### Endpoints Start
 app.post('/lobby/init', (req, res) => {
   let lobby = addNewLobby();
-  res.status(200).send({ id: lobby });
+  res.status(200).json({ id: lobby });
 });
 
 app.post('/lobby/addPlayer', (req, res) => {

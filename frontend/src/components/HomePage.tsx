@@ -1,16 +1,17 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { useForm } from "react-hook-form";
 import { Button } from 'react-bootstrap';
+import { useHistory } from 'react-router-dom';
 
 import '../styles/HomePage.scss';
 
-const HomePage = () => {
 
+const HomePage = () => {
   return (
   <>
     <div className="home-wrapper">
       <h1 className="name-of-game">Biscuits and Gravy</h1>
-      <ScreenNameForm/>
+      <ScreenNameForm />
       <h3>
         <span className="created-by">Kevin Tang, Michael Owens, Mavey Ma, Henry Ling. 2020 SABA Hackathon.</span>
       </h3>
@@ -28,21 +29,24 @@ type createLobbyResponse = {
   id: string;
 }
 
-const submitButtonHandler = () => {
-  fetch('http://localhost:8000/lobby/init/', {
-    method: 'POST',
-  })
-  .then(data => data.json())
-  .then((data:createLobbyResponse) => {
-    window.location.pathname = `game/${data.id}`;
-  })
-}
-
 const ScreenNameForm = () => {
+  const history = useHistory();
+
   const { register, handleSubmit } = useForm<ScreenName>();
   const onSubmit = (data: ScreenName) => {
-    console.log("data", data);
+    //TODO
   };
+
+  const submitButtonHandler = () => {
+
+    fetch('http://localhost:5000/lobby/init/', {
+      method: 'POST',
+    })
+    .then(data => data.json())
+    .then((data:createLobbyResponse) => {
+        history.push(`game/${data.id}`);
+    }).catch(e => console.error(e))
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
