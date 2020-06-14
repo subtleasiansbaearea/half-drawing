@@ -8,9 +8,9 @@ wss.on('connection', function (ws) {
     console.log('received: %s', message)
   })
 
-  // setInterval(
-  //   () => ws.send(JSON.stringify({action: 'PHASE_ONE', data: []})),
-  //   1000
-  // )
+  setInterval(
+    () => ws.send(JSON.stringify({action: 'PHASE_ONE', data: []})),
+    1000
+  )
 })
 

@@ -8,7 +8,6 @@ import GamePage from "./components/GamePage"
 import HomePage from "./components/HomePage"
 import React, { useEffect } from 'react';
 
-import { w3cwebsocket as W3CWebSocket } from "websocket";
 var ws = new WebSocket('ws://localhost:40510');
 // event emmited when connected
 ws.onopen = function () {
