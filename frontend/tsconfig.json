@@ -21,6 +21,9 @@
     "jsx": "react"
   },
   "include": [
-    "src", "../types/Types.ts", "../types/Command.ts", "../types/History.ts"
+    "src",
+    "src/types/Types.ts",
+    "src/types/Transport.ts",
+    "src/types/History.ts"
   ]
 }

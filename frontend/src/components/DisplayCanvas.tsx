@@ -1,27 +1,30 @@
-import '../styles/DrawingComponent.scss';
-
 import { Button, ButtonGroup } from 'react-bootstrap';
-import { History, LineHistory } from '../../../types/History';
-import { Layer, Stage } from 'react-konva';
+import { History, LineHistory } from '../types/History';
+import { Layer, Rect, Stage } from 'react-konva';
 import React, { useEffect, useRef } from 'react';
 import { drawLine, playLine } from './tools/Line'
 
 import Konva from 'konva';
 
-interface DrawingDisplayProps {
+interface DisplayCanvasProps {
   width: number,
   height: number,
   histories?: Array<History>,
   timescale: number,
+  coverLeft?: boolean,
+  showButton?: boolean,
+  className?: string,
 }
 
+const STRIP_WIDTH = 30;
 /**
  * React implementation of
  * https://medium.com/better-programming/how-to-make-a-whiteboard-app-with-react-konva-8766a532a39f
  */
-function DrawingDisplay(props: DrawingDisplayProps) {
+function DisplayCanvas(props: DisplayCanvasProps) {
   const layerRef = useRef<Konva.Layer>(null);
-  const { width, height, histories } = props;
+  const stageRef = useRef<Stage>(null);
+  const { width, height, histories, coverLeft } = props;
 
   function clear() {
     layerRef.current?.destroyChildren();
@@ -70,6 +73,40 @@ function DrawingDisplay(props: DrawingDisplayProps) {
     }
   }
 
+  function firstDraw() {
+    if (!stageRef?.current || !layerRef?.current) {
+      return;
+    }
+    draw();
+    if (coverLeft) {
+      // draw background underneath
+      const newLayer = new Konva.Layer();
+      const background = new Konva.Rect({
+        x: width - STRIP_WIDTH,
+        y: 0,
+        width: STRIP_WIDTH,
+        height: height,
+        fill: 'white',
+      });
+      newLayer.add(background);
+      stageRef.current.getStage().add(newLayer);
+      newLayer.moveToBottom();
+
+      const eraseRect = new Konva.Rect({
+        x: 0,
+        y: 0,
+        width: width - STRIP_WIDTH,
+        height: height,
+        fill: 'green',
+        globalCompositeOperation: 'destination-out'
+      })
+      const layer = layerRef.current.getLayer();
+      layer.add(eraseRect);
+      layer.draw();
+    }
+    // erase everything to the left
+  }
+
   function play() {
     clear();
     if (!layerRef?.current || !histories || !histories.length) return;
@@ -84,10 +121,24 @@ function DrawingDisplay(props: DrawingDisplayProps) {
     }
   }
 
-  useEffect(draw, []);
+  useEffect(firstDraw, []);
+
+  const playDrawButton = props.showButton ? (<ButtonGroup className={"play-button"}>
+    <Button
+      variant="primary"
+      onClick={play}
+    >
+      Play
+    </Button>
+    <Button variant="secondary" onClick={draw}>
+      Draw
+    </Button>
+  </ButtonGroup>) : null;
+
   return (
-    <div className="display-stage">
+    <div className={`display-stage ${props.className}`}>
       <Stage
+        ref={stageRef}
         className={"display-canvas-container"}
         width={width}
         height={height}
@@ -95,20 +146,10 @@ function DrawingDisplay(props: DrawingDisplayProps) {
         <Layer ref={layerRef}>
         </Layer>
       </Stage>
-      <ButtonGroup className={"play-button"}>
-        <Button
-          variant="primary"
-          onClick={play}
-        >
-          Play
-        </Button>
-        <Button variant="secondary" onClick={draw}>
-          Draw
-        </Button>
-      </ButtonGroup>
-    </div>
+      {playDrawButton}
+    </div >
   );
 }
 
 
-export default DrawingDisplay;
+export default DisplayCanvas;

@@ -5,8 +5,8 @@ import { History } from "./History";
 /** State of the game */
 export enum GAME_STATE {
   LOBBY,
-  LEFT_DRAWING,
-  RIGHT_DRAWING,
+  PHASE_ONE,
+  PHASE_TWO,
   DISPLAY,
 }
 

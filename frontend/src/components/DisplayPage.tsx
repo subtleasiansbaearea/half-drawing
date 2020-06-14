@@ -1,10 +1,9 @@
 import '../styles/DisplayPage.scss';
 
-import * as TestHistories from "./tools/TestHistories";
-
-import DrawingDisplay from './DrawingDisplay';
-import { DrawingPair } from "../../../types/Types"
+import DisplayCanvas from './DisplayCanvas';
+import { DrawingPair } from "../types/Types"
 import React from 'react';
+import { getHeartDrawingPairs } from './tools/TestHistories';
 
 interface DisplayPageProps {
   drawingPairs: Array<DrawingPair>,
@@ -14,13 +13,7 @@ interface DisplayPageProps {
 
 
 const defaultProps: DisplayPageProps = {
-  drawingPairs: [
-    TestHistories.getHeartWithNames("Henry", "Mavey"),
-    TestHistories.getHeartWithNames("Kevin", "Michael"),
-    TestHistories.getHeartWithNames("Michael", "Henry"),
-    TestHistories.getHeartWithNames("Mavey", "Kevin"),
-    TestHistories.getHeartWithNames("Michael", "Kevin"),
-  ],
+  drawingPairs: getHeartDrawingPairs(),
   width: 540,
   height: 540,
 }
@@ -34,7 +27,7 @@ function DisplayPage(props: DisplayPageProps) {
       <div className={"drawing-display"} key={index}>
         <div className={"drawing"}>
           <div className={"left-drawing"}>
-            <DrawingDisplay
+            <DisplayCanvas
               width={width}
               height={height}
               histories={pair.left?.histories}
@@ -43,7 +36,7 @@ function DisplayPage(props: DisplayPageProps) {
           </div>
           <div className={"center-column"} />
           <div className={"right-drawing"}>
-            <DrawingDisplay
+            <DisplayCanvas
               width={width}
               height={height}
               histories={pair.right?.histories}
