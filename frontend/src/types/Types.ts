@@ -15,10 +15,9 @@ export enum GAME_STATE {
  */
 export interface Game {
   timerId: NodeJS.Timeout, // for timimg out and GC
-  players: { [playerId: string]: Player },
-  drawingPairs: { [drawingPairId: string]: DrawingPair },
-  state: GAME_STATE,
-  hostId?: string, // playerId
+  drawingPairs: Map<string, DrawingPair>;
+  players: Map<string, Player>;
+  gameState: GAME_STATE,
 }
 
 /**

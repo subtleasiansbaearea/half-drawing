@@ -1,5 +1,4 @@
-import { ClientMessage, GameResponse, LobbyRequest, MESSAGE_TYPE } from '../frontend/src/types/Transport';
-
+import { ClientMessage } from '../frontend/src/types/Transport';
 import WebSocket from 'ws';
 import { games } from './server';
 
@@ -15,17 +14,10 @@ wss.on('connection', function (ws: WebSocket) {
     console.log('#message:')
     console.log(message)
     const parsedMessage: ClientMessage = JSON.parse(message);
-    const { type, gameId } = parsedMessage;
+    const { gameId } = parsedMessage;
     const game = games[gameId];
 
-    switch (type) {
-      case MESSAGE_TYPE.LOBBY:
-        game.handleLobbyMessage(parsedMessage as LobbyRequest);
-        break;
-      case MESSAGE_TYPE.GAME:
-        game.handleGameMessage(parsedMessage as GameResponse);
-        break;
-    }
+    game.handleClientMessage(ws, parsedMessage);
   })
 
   // Garbage code

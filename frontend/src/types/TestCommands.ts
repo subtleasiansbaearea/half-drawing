@@ -7,7 +7,6 @@ export const TEST_PHASE_ONE_COMMAND: PhaseOneCommand = {
   gameState: GAME_STATE.PHASE_ONE,
   prompt: 'Draw biscuits and gravy',
   drawingPairId: 'drawingPairId1',
-  playerId: 'player1id'
 };
 
 export const TEST_PHASE_TWO_COMMAND: PhaseTwoCommand = {

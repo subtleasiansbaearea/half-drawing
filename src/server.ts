@@ -30,15 +30,6 @@ const createNewGame = () => {
   return id;
 }
 
-const addPlayerToLobby = (id: string) => {
-  if (games[id]) {
-    const newPlayerId = games[id].players.length;
-    // games[id].players.push(newPlayerId); // FIXME
-    return { newPlayerId };
-  }
-  return { error: `lobby ${id} does not exist` }
-}
-
 const endLobby = (id: string) => delete games[id];
 
 
@@ -46,24 +37,6 @@ const endLobby = (id: string) => delete games[id];
 app.post('/lobby/init', (req: any, res: any) => {
   let lobby = createNewGame();
   res.status(200).json({ id: lobby });
-});
-
-app.post('/lobby/addPlayer', (req: any, res: any) => {
-  const { body } = req;
-  if (!body) {
-    res.status(404).send({ error: 'Did not receive POST body' });
-    return;
-  }
-  const { id } = body;
-  if (!id) {
-    res.status(404).send({ error: `Expected id, but received ${id}` });
-    return;
-  }
-  const { newPlayerId, error } = addPlayerToLobby(id)
-  if (error) {
-    res.status(404).send({ error });
-  }
-  res.status(200).send({ playerId: newPlayerId, players: games[id].players });
 });
 
 app.delete('/lobby/end', (req: any, res: any) => {

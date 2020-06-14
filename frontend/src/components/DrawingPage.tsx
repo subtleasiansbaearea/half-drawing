@@ -16,6 +16,8 @@ import { addLine } from './tools/Line'
 
 const BRUSH_WIDTHS = [4, 9, 16, 25, 36];
 const DEFAULT_BRUSH_WIDTH = 16;
+const PHASE_ONE_PROMPT = 'Draw half of ';
+const PHASE_TWO_PROMPT = 'Finish the drawing of ';
 
 interface DrawingComponentProps {
   prompt: string,
@@ -97,6 +99,7 @@ function DrawingComponent(props: DrawingComponentProps) {
   useEffect(onInit, [isLeft]);
 
   const sizeSwatches: Array<JSX.Element> = [];
+  const promptPrefix = isLeft ? PHASE_ONE_PROMPT : PHASE_TWO_PROMPT;
 
   // TODO(TangerineCat): move brushes into sub component
   for (const size of BRUSH_WIDTHS) {
@@ -144,7 +147,7 @@ function DrawingComponent(props: DrawingComponentProps) {
   return (
     <div className="drawing-section">
       <div className="prompt">
-        {prompt}
+        {`${promptPrefix} ${prompt}`}
       </div>
       <div className="stage">
         {isLeft ? ActiveStage : PassiveStage}
