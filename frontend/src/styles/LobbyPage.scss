@@ -15,7 +15,7 @@ $offset-player-name-from-left: 200px;
   flex-wrap: wrap;
   .lobby-colummn:last-of-type {
     display: block;
-    background-color: blue;
+    // background-color: blue;
     margin-left: 40px;
   }
   .lobby-column {
@@ -38,19 +38,28 @@ $offset-player-name-from-left: 200px;
   #first-player-name {
     @extend .player-name;
     // spinnnnnnn
-    transform: rotate(20deg);
-    padding-left: 100px;
+    // transform: rotate(20deg);
+    // padding-left: 100px;
     // blueeeeee
-    color: blue;
+    color: red;
     padding-top: 100px;
+    text-shadow:
+      -3px -3px 0 #000,
+      3px -3px 0 #000,
+      -3px 3px 0 #000,
+      3px 3px 0 #000;
   }
   #second-player-name {
     @extend .player-name;
     // spinnnnnnn
-    transform: rotate(340deg);
-    padding-left: 400px;
-    // redddddddd
+    // transform: rotate(340deg);
+    // padding-left: 400px;
     color: red;
+    text-shadow:
+      -3px -3px 0 #000,
+      3px -3px 0 #000,
+      -3px 3px 0 #000,
+      3px 3px 0 #000;
   }
   .btn-group {
     // this will probably go away maybe idk

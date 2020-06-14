@@ -8,17 +8,17 @@ import GamePage from "./components/GamePage"
 import HomePage from "./components/HomePage"
 import React from 'react';
 
-var ws = new WebSocket('ws://localhost:40510', 'json');
-// event emmited when connected
-ws.onopen = function () {
-  console.log('websocket is connected ...')
-  // sending a send event to websocket server
-}
-// event emmited when receiving message 
-ws.onmessage = function (ev) {
-  console.log(ev.data);
-  // ws.send(JSON.stringify({`got message ${ev.data}`}));
-}
+// var ws = new WebSocket('ws://localhost:40510', 'json');
+// // event emmited when connected
+// ws.onopen = function () {
+//   console.log('websocket is connected ...')
+//   // sending a send event to websocket server
+// }
+// // event emmited when receiving message 
+// ws.onmessage = function (ev) {
+//   console.log(ev.data);
+//   // ws.send(JSON.stringify({`got message ${ev.data}`}));
+// }
 const App = () => {
 
   return (

@@ -11,6 +11,7 @@ import DisplayCanvas from './DisplayCanvas';
 import { Drawing } from '../types/Types';
 import { History } from '../types/History'
 import Konva from 'konva';
+import Timer from './Timer';
 import _ from 'lodash';
 import { addLine } from './tools/Line'
 
@@ -144,8 +145,11 @@ function DrawingComponent(props: DrawingComponentProps) {
     histories={leftDrawing?.histories}
   />)
 
+  const handleSendDrawing = () => sendDrawing && sendDrawing(histories);
+
   return (
     <div className="drawing-section">
+      <Timer cb={handleSendDrawing} />
       <div className="prompt">
         {`${promptPrefix} ${prompt}`}
       </div>
@@ -168,7 +172,7 @@ function DrawingComponent(props: DrawingComponentProps) {
           <div className="black-border-box" onClick={clear}>
             <img src={ImageConstants.BLANK_PAGE_ICON} alt="Blank"></img>
           </div>
-          <Button onClick={() => sendDrawing && sendDrawing(histories)}>
+          <Button onClick={handleSendDrawing}>
             done?
           </Button>
         </div>
