@@ -38,23 +38,27 @@ const GamePage = (route: Route) => {
   const [drawingPairs, setDrawingPairs] = useState<Array<DrawingPair>>([]);
   const [leftDrawing, setLeftDrawing] = useState<Drawing | undefined>(undefined);
   const [ws, setWs] = useState<WebSocket | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const {
     match: {
       params: { gameId }
     }
   } = route;
 
-  
+
 
   const addNewPlayer = () => {
     const ws = new WebSocket('ws://localhost:40510', 'json');
     // event emmited when connected
     ws.onopen = function () {
+      setIsLoading(false);
+      // save the ws reference
+      setWs(ws);
       console.log('websocket is connected ...')
-      // sending a send event to websocket server
+      // when a player joins a lobby
       const addNewPlayerRequest: Transport.NewPlayerRequest = {
-        type: Transport.MESSAGE_TYPE.LOBBY,
-        lobbyType: LOBBY_MESSAGE_TYPE.NEW_PLAYER_REQUEST,
+        gameState: GAME_STATE.LOBBY,
+        lobbyType: Transport.LOBBY_MESSAGE_TYPE.NEW_PLAYER_REQUEST,
         gameId,
       };
       ws.send(JSON.stringify(addNewPlayerRequest));
@@ -64,25 +68,6 @@ const GamePage = (route: Route) => {
       console.log(ev.data);
       // ws.send(JSON.stringify({`got message ${ev.data}`}));
     }
-
-    // const ws = new WebSocket('wss://localhost:40510', 'json');
-    // // event emmited when connected
-    // ws.onopen = function () {
-    //   console.log('websocket is connected ...');
-    //   const addNewPlayerRequest: Transport.NewPlayerRequest = {
-    //     type: Transport.MESSAGE_TYPE.LOBBY,
-    //     lobbyType: LOBBY_MESSAGE_TYPE.NEW_PLAYER_REQUEST,
-    //     gameId,
-    //   };
-    //   ws.send(JSON.stringify(addNewPlayerRequest));
-
-    // };
-    // // event emmited when receiving message 
-    // ws.onmessage = function (ev) {
-    //   console.log(ev.data);
-    //   // ws.send(JSON.stringify({`got message ${ev.data}`}));
-    // };
-    setWs(ws);
   };
 
   useEffect(addNewPlayer, []);
@@ -145,6 +130,8 @@ const GamePage = (route: Route) => {
     sendResponse(response);
   }
 
+
+
   let Component;
   switch (gameState) {
     case GAME_STATE.LOBBY:
@@ -183,38 +170,41 @@ const GamePage = (route: Route) => {
 
   return (
     <div className={"game-page"}>
-      <div>The game ID is {gameId}</div>
-      <ButtonGroup>
-        <Button
-          variant="primary"
-          onClick={() => setGameState(GAME_STATE.LOBBY)}
-          active={gameState === GAME_STATE.LOBBY}
-        >
-          Lobby
+      {isLoading ? <h1>LOADING. . .</h1> :
+        <>
+          <ButtonGroup>
+            <Button
+              variant="primary"
+              onClick={() => setGameState(GAME_STATE.LOBBY)}
+              active={gameState === GAME_STATE.LOBBY}
+            >
+              Lobby
         </Button>
-        <Button
-          variant="primary"
-          onClick={() => handleCommand(TEST_PHASE_ONE_COMMAND)}
-          active={gameState === GAME_STATE.PHASE_ONE}
-        >
-          Phase 1
+            <Button
+              variant="primary"
+              onClick={() => handleCommand(TEST_PHASE_ONE_COMMAND)}
+              active={gameState === GAME_STATE.PHASE_ONE}
+            >
+              Phase 1
         </Button>
-        <Button
-          variant="primary"
-          onClick={() => handleCommand(TEST_PHASE_TWO_COMMAND)}
-          active={gameState === GAME_STATE.PHASE_TWO}
-        >
-          Phase 2
+            <Button
+              variant="primary"
+              onClick={() => handleCommand(TEST_PHASE_TWO_COMMAND)}
+              active={gameState === GAME_STATE.PHASE_TWO}
+            >
+              Phase 2
         </Button>
-        <Button
-          variant="primary"
-          onClick={() => handleCommand(TEST_DISPLAY_COMMAND)}
-          active={gameState === GAME_STATE.DISPLAY}
-        >
-          Display
+            <Button
+              variant="primary"
+              onClick={() => handleCommand(TEST_DISPLAY_COMMAND)}
+              active={gameState === GAME_STATE.DISPLAY}
+            >
+              Display
         </Button>
-      </ButtonGroup>
-      {Component}
+          </ButtonGroup>
+          {Component}
+        </>
+      }
     </div >
   );
 };
