@@ -18,7 +18,7 @@ export interface Game {
   players: { [playerId: string]: Player },
   drawingPairs: { [drawingPairId: string]: DrawingPair },
   state: GAME_STATE,
-  hostId: string, // playerId
+  hostId?: string, // playerId
 }
 
 /**
@@ -28,7 +28,6 @@ export interface Player {
   playerId: string,
   name: string,
   isReady: boolean,
-  socket: string,
 }
 
 /**
