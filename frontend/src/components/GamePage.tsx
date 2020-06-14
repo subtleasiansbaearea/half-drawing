@@ -49,7 +49,7 @@ const GamePage = (route: Route) => {
 
 
 
-  const addNewPlayer = () => {
+  const connectAndAddNewPlayer = () => {
     const ws = new WebSocket('ws://localhost:40510', 'json');
     // event emmited when connected
     ws.onopen = function () {
@@ -72,7 +72,7 @@ const GamePage = (route: Route) => {
     }
   };
 
-  useEffect(addNewPlayer, []);
+  useEffect(connectAndAddNewPlayer, []);
 
   function updatePlayerState() {
     const user = players.find(p => p.playerId === playerId);
@@ -146,6 +146,7 @@ const GamePage = (route: Route) => {
   switch (gameState) {
     case GAME_STATE.LOBBY:
       Component = (<LobbyPage
+        players={players}
         updateName={setPlayerName}
         isReady={isReady}
         setReady={() => {
@@ -159,7 +160,14 @@ const GamePage = (route: Route) => {
           
           ws?.send(JSON.stringify(updateLobbyReadyStateMessage));
         }}
-        startGame={() => {}}
+        startGame={() => {
+          const startGameRequestMessage: Transport.StartGameRequest = {
+            gameId,
+            gameState,
+            lobbyType: LOBBY_MESSAGE_TYPE.START_GAME_REQUEST,
+          };
+          ws?.send(JSON.stringify(startGameRequestMessage));
+        }}
       />);
       break;
     case GAME_STATE.PHASE_ONE:
