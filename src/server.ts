@@ -1,3 +1,5 @@
+import './websocketService';
+
 import GameService from './GameService';
 import bodyParser from 'body-parser';
 import cors from 'cors';
