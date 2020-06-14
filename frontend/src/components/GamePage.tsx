@@ -3,7 +3,7 @@ import './../styles/GamePage.scss';
 import * as Transport from '../types/Transport';
 
 import { Drawing, DrawingPair, GAME_STATE } from '../types/Types';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TEST_DISPLAY_COMMAND, TEST_PHASE_ONE_COMMAND, TEST_PHASE_TWO_COMMAND } from '../types/TestCommands';
 
 import Button from 'react-bootstrap/Button';
@@ -11,7 +11,10 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import DisplayPage from './DisplayPage';
 import DrawingPage from './DrawingPage';
 import { History } from '../types/History';
+import { LOBBY_MESSAGE_TYPE } from '../types/Transport';
 import LobbyPage from './LobbyPage';
+
+// import { WsConnection } from '../clients/api';
 
 //TODO make a call to database
 //check that the game id actually exists
@@ -26,20 +29,63 @@ interface Route {
 
 const DRAWING_HEIGHT = 540;
 
-const GamePage = (match: Route) => {
+const GamePage = (route: Route) => {
   const [gameState, setGameState] = useState(GAME_STATE.LOBBY);
   const [prompt, setPrompt] = useState('');
   const [playerName, setPlayerName] = useState('');
   const [playerId, setPlayerId] = useState('');
   const [drawingPairId, setDrawingPairId] = useState('');
   const [drawingPairs, setDrawingPairs] = useState<Array<DrawingPair>>([]);
-  const [leftDrawing, setLeftDrawing] =
-    useState<Drawing | undefined>(undefined);
+  const [leftDrawing, setLeftDrawing] = useState<Drawing | undefined>(undefined);
+  const [ws, setWs] = useState<WebSocket | null>(null);
   const {
     match: {
       params: { gameId }
     }
-  } = match;
+  } = route;
+
+  
+
+  const addNewPlayer = () => {
+    const ws = new WebSocket('ws://localhost:40510', 'json');
+    // event emmited when connected
+    ws.onopen = function () {
+      console.log('websocket is connected ...')
+      // sending a send event to websocket server
+      const addNewPlayerRequest: Transport.NewPlayerRequest = {
+        type: Transport.MESSAGE_TYPE.LOBBY,
+        lobbyType: LOBBY_MESSAGE_TYPE.NEW_PLAYER_REQUEST,
+        gameId,
+      };
+      ws.send(JSON.stringify(addNewPlayerRequest));
+    }
+    // event emmited when receiving message 
+    ws.onmessage = function (ev) {
+      console.log(ev.data);
+      // ws.send(JSON.stringify({`got message ${ev.data}`}));
+    }
+
+    // const ws = new WebSocket('wss://localhost:40510', 'json');
+    // // event emmited when connected
+    // ws.onopen = function () {
+    //   console.log('websocket is connected ...');
+    //   const addNewPlayerRequest: Transport.NewPlayerRequest = {
+    //     type: Transport.MESSAGE_TYPE.LOBBY,
+    //     lobbyType: LOBBY_MESSAGE_TYPE.NEW_PLAYER_REQUEST,
+    //     gameId,
+    //   };
+    //   ws.send(JSON.stringify(addNewPlayerRequest));
+
+    // };
+    // // event emmited when receiving message 
+    // ws.onmessage = function (ev) {
+    //   console.log(ev.data);
+    //   // ws.send(JSON.stringify({`got message ${ev.data}`}));
+    // };
+    setWs(ws);
+  };
+
+  useEffect(addNewPlayer, []);
 
   function handleCommand(command: Transport.ServerCommand) {
     console.log(command.gameState);

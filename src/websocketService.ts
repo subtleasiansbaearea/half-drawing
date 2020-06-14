@@ -7,13 +7,13 @@ export const prompts: string[] = ['Biscuits and gravy', 'Mac and Cheese'];
 
 
 // # Websocket logic start
-
 const wss = new WebSocket.Server({ port: 40510 })
 
 wss.on('connection', function (ws: WebSocket) {
 
   ws.on('message', function (message: string) {
-    console.log('received: %s', message)
+    console.log('#message:')
+    console.log(message)
     const parsedMessage: ClientMessage = JSON.parse(message);
     const { type, gameId } = parsedMessage;
     const game = games[gameId];
@@ -29,8 +29,8 @@ wss.on('connection', function (ws: WebSocket) {
   })
 
   // Garbage code
-  setInterval(
-    () => ws.send(JSON.stringify({ action: 'PHASE_ONE', data: [] })),
-    1000
-  )
+  // setInterval(
+  //   () => ws.send(JSON.stringify({ action: 'PHASE_ONE', data: [] })),
+  //   1000
+  // )
 })

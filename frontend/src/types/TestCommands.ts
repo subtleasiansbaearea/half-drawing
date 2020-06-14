@@ -1,4 +1,4 @@
-import { DisplayCommand, MESSAGE_TYPE, PhaseOneCommand, PhaseTwoCommand } from "./Transport";
+import { DisplayCommand, PhaseOneCommand, PhaseTwoCommand } from "./Transport";
 import { HEART_LEFT, getHeartDrawingPairs } from "../components/tools/TestHistories";
 
 import { GAME_STATE } from "./Types";
