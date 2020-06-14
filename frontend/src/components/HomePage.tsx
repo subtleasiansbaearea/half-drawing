@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useForm } from "react-hook-form";
 import { Button } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 
-import '../styles/HomePage.scss';
+import '../styles/Global.scss';
 
 
 const HomePage = () => {
