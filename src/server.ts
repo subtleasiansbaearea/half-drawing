@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
+const gameService = require('./gameService');
 const websocketService = require('./websocketService');
 const https = require('https');
 const webSocketsServerPort = 8000;
@@ -19,9 +20,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const prompts: string[] = ['Biscuits and gravy'];
-const games: {[key: string]: any} = {};
-const clients = {};
+const { games } = gameService;
 
 
 const addNewLobby = () => {

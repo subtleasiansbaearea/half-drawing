@@ -13,9 +13,9 @@
   },
   "include": [
     "src",
+    "frontend/src/types"
   ],
   "exclude": [
-    "frontend",
     "build",
     "node_modules"
   ]
