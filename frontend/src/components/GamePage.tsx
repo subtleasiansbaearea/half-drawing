@@ -13,6 +13,7 @@ import DrawingPage from './DrawingPage';
 import { History } from '../types/History';
 import { LOBBY_MESSAGE_TYPE } from '../types/Transport';
 import LobbyPage from './LobbyPage';
+import Timer from './Timer';
 
 // import { WsConnection } from '../clients/api';
 
