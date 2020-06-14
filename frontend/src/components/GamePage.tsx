@@ -2,7 +2,7 @@ import './../styles/GamePage.scss';
 
 import * as Transport from '../types/Transport';
 
-import { Drawing, DrawingPair, GAME_STATE } from '../types/Types';
+import { Drawing, DrawingPair, GAME_STATE, Player } from '../types/Types';
 import React, { useEffect, useState } from 'react';
 import { TEST_DISPLAY_COMMAND, TEST_PHASE_ONE_COMMAND, TEST_PHASE_TWO_COMMAND } from '../types/TestCommands';
 
@@ -39,6 +39,8 @@ const GamePage = (route: Route) => {
   const [leftDrawing, setLeftDrawing] = useState<Drawing | undefined>(undefined);
   const [ws, setWs] = useState<WebSocket | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [players, setPlayers] = useState<Player[]>([]);
+  const [isReady, setIsReady] = useState<boolean | undefined>(false);
   const {
     match: {
       params: { gameId }
@@ -65,18 +67,26 @@ const GamePage = (route: Route) => {
     }
     // event emmited when receiving message 
     ws.onmessage = function (ev) {
-      console.log(ev.data);
-      // ws.send(JSON.stringify({`got message ${ev.data}`}));
+      console.log(ev.data)
+      handleCommand(ev.data);
     }
   };
 
   useEffect(addNewPlayer, []);
 
+  function updatePlayerState() {
+    const user = players.find(p => p.playerId === playerId);
+      setIsReady(user?.isReady);
+  }
+
   function handleCommand(command: Transport.ServerCommand) {
     console.log(command.gameState);
     switch (command.gameState) {
       case GAME_STATE.LOBBY:
-        // do nothing
+        const {playerId, players}= (command as Transport.LobbyUpdateCommand);
+        setPlayerId(playerId);
+        setPlayers(players);
+        updatePlayerState()
         break;
       case GAME_STATE.PHASE_ONE:
         handlePhaseOneCommand(command as Transport.PhaseOneCommand);
@@ -137,7 +147,19 @@ const GamePage = (route: Route) => {
     case GAME_STATE.LOBBY:
       Component = (<LobbyPage
         updateName={setPlayerName}
-        setReady={() => console.log('ready')}
+        isReady={isReady}
+        setReady={() => {
+          const updateLobbyReadyStateMessage: Transport.UpdateReadyRequest = {
+            gameState: GAME_STATE.LOBBY,
+            lobbyType: LOBBY_MESSAGE_TYPE.UPDATE_READY_STATE_REQUEST,
+            gameId,
+            playerId,
+            isReady: !players.find(p => p.playerId === playerId)?.isReady,
+          };
+          
+          ws?.send(JSON.stringify(updateLobbyReadyStateMessage));
+        }}
+        startGame={() => {}}
       />);
       break;
     case GAME_STATE.PHASE_ONE:

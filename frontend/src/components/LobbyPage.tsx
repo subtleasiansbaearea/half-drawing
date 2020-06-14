@@ -8,7 +8,9 @@ import React from 'react';
 
 interface LobbyPageProps {
   setReady: () => void;
+  isReady?: boolean;
   updateName: (name: string) => void;
+  startGame: () => void;
 }
 
 const LobbyPage = (props: LobbyPageProps) => {
@@ -17,12 +19,8 @@ const LobbyPage = (props: LobbyPageProps) => {
     console.log('Start');
   }
 
-  function readyButton() {
-    props.setReady();
-  }
-
   const placeholderRulesText = 'Lorem Ipsum '.repeat(80);
-
+  const { isReady, setReady } = props;
   return (
     <>
       <div className="lobby-page">
@@ -50,10 +48,10 @@ const LobbyPage = (props: LobbyPageProps) => {
             <h3>Players</h3>
             <div className="player-names">
               <div className="control-group">
-                <div id="first-player-name">Alice</div>
+                <div id="first-player-name">Alice {isReady ? ' is Ready' : null}</div>
               </div>
               <div className="control-group">
-                <div id="second-player-name">Bob</div>
+                <div id="second-player-name">Bob {isReady ? ' is Ready' : null}</div>
               </div>
             </div>
           </section>
@@ -61,7 +59,7 @@ const LobbyPage = (props: LobbyPageProps) => {
             <Button variant="primary" size="lg" onClick={startButton}>Start Game</Button>
           </ButtonGroup>
           <ButtonGroup>
-            <Button variant="primary" size="lg" onClick={readyButton}>Ready</Button>
+            <Button variant="primary" size="lg" onClick={setReady}>Ready</Button>
           </ButtonGroup>
         </div>
       </div>
