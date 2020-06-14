@@ -6,14 +6,19 @@ import FormControl from 'react-bootstrap/FormControl';
 import InputGroup from 'react-bootstrap/InputGroup';
 import React from 'react';
 
-const LobbyComponent = () => {
+interface LobbyPageProps {
+  setReady: () => void;
+  updateName: (name: string) => void;
+}
+
+const LobbyPage = (props: LobbyPageProps) => {
 
   function startButton() {
     console.log('Start');
   }
 
   function readyButton() {
-    console.log('Ready');
+    props.setReady();
   }
 
   const placeholderRulesText = 'Lorem Ipsum '.repeat(80);
@@ -64,4 +69,4 @@ const LobbyComponent = () => {
   );
 };
 
-export default LobbyComponent;
+export default LobbyPage;
