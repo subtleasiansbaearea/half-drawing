@@ -1,14 +1,9 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const path = require('path');
-const gameService = require('./gameService');
-const websocketService = require('./websocketService');
-const https = require('https');
-const webSocketsServerPort = 8000;
-const cors = require('cors');
-
-
-const { v4: uuidv4 } = require('uuid')
+import GameService from './GameService';
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import express from 'express';
+import path from 'path';
+import { v4 as uuidv4 } from 'uuid';
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -20,21 +15,20 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const { games } = gameService;
 
+export const games: { [LobbyId: string]: GameService } = {};
 
-const addNewLobby = () => {
+const createNewGame = () => {
   const id = uuidv4().slice(-6);
   const timerId = setTimeout(() => {
     delete games[id]
   }, TWENTY_MINUTES_IN_MS);
 
-  // TODO: Fix type
-  // games[id] = { timerId: timerId, players: [0] }
+  games[id] = new GameService(timerId)
   return id;
 }
 
-const addPlayerToLobby = (id: any) => {
+const addPlayerToLobby = (id: string) => {
   if (games[id]) {
     const newPlayerId = games[id].players.length;
     // games[id].players.push(newPlayerId); // FIXME
@@ -43,12 +37,12 @@ const addPlayerToLobby = (id: any) => {
   return { error: `lobby ${id} does not exist` }
 }
 
-const endLobby = (id: any) => delete games[id];
+const endLobby = (id: string) => delete games[id];
 
 
 // ### Endpoints Start
 app.post('/lobby/init', (req: any, res: any) => {
-  let lobby = addNewLobby();
+  let lobby = createNewGame();
   res.status(200).json({ id: lobby });
 });
 

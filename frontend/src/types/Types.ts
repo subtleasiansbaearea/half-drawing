@@ -14,7 +14,7 @@ export enum GAME_STATE {
  * Main representation object of a game.
  */
 export interface Game {
-  timerId: string, // for timimg out and GC
+  timerId: NodeJS.Timeout, // for timimg out and GC
   players: { [playerId: string]: Player },
   drawingPairs: { [drawingPairId: string]: DrawingPair },
   state: GAME_STATE,

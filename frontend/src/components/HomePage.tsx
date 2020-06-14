@@ -1,22 +1,21 @@
-import React from 'react';
-import { useForm } from "react-hook-form";
-import { Button } from 'react-bootstrap';
-import { useHistory } from 'react-router-dom';
-
 import '../styles/Global.scss';
 
+import { Button } from 'react-bootstrap';
+import React from 'react';
+import { useForm } from "react-hook-form";
+import { useHistory } from 'react-router-dom';
 
 const HomePage = () => {
   return (
-  <>
-    <div className="home-wrapper">
-      <h1 className="name-of-game">Biscuits and Gravy</h1>
-      <ScreenNameForm />
-      <h3>
-        <span className="created-by">Kevin Tang, Michael Owens, Mavey Ma, Henry Ling. 2020 SABA Hackathon.</span>
-      </h3>
-    </div>
-  </>
+    <>
+      <div className="home-wrapper">
+        <h1 className="name-of-game">Biscuits and Gravy</h1>
+        <ScreenNameForm />
+        <h3>
+          <span className="created-by">Kevin Tang, Michael Owens, Mavey Ma, Henry Ling. 2020 SABA Hackathon.</span>
+        </h3>
+      </div>
+    </>
   );
 };
 
@@ -42,10 +41,10 @@ const ScreenNameForm = () => {
     fetch('http://localhost:5000/lobby/init/', {
       method: 'POST',
     })
-    .then(data => data.json())
-    .then((data:createLobbyResponse) => {
+      .then(data => data.json())
+      .then((data: createLobbyResponse) => {
         history.push(`game/${data.id}`);
-    }).catch(e => console.error(e))
+      }).catch(e => console.error(e))
   }
 
   return (
@@ -58,8 +57,8 @@ const ScreenNameForm = () => {
           ref={register}
           placeholder="Enter your name"
         />
-      </div> 
- 
+      </div>
+
       <Button variant="success" type="submit" className="enter-button" onClick={submitButtonHandler}>Create Game</Button>
     </form>
   );

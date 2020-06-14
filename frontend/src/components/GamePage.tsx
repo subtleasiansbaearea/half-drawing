@@ -90,6 +90,7 @@ const GamePage = (match: Route) => {
     }
 
     const response: Transport.DrawingResponse = {
+      type: Transport.MESSAGE_TYPE.GAME,
       gameId: gameId,
       gameState: gameState,
       drawing: drawing,

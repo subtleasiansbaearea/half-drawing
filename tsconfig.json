@@ -1,13 +1,15 @@
 {
   "compilerOptions": {
-    "target": "es5",                          
-    "module": "commonjs",                    
-    "lib": ["esnext"],                     
+    "target": "es6",
+    "module": "commonjs",
+    "lib": [
+      "esnext"
+    ],
     "allowJs": true,
-    "outDir": "build",                          
+    "outDir": "build",
     "rootDir": ".",
-    "strict": true,         
-    "noImplicitAny": false,
+    "strict": true,
+    "noImplicitAny": true,
     "esModuleInterop": true,
     "resolveJsonModule": true
   },

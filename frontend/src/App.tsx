@@ -2,23 +2,23 @@ import './App.scss';
 import './'
 
 import { Link, Route, BrowserRouter as Router } from 'react-router-dom';
+import React, { useEffect } from 'react';
 
 import GameNotFoundPage from "./components/GameNotFoundPage"
 import GamePage from "./components/GamePage"
 import HomePage from "./components/HomePage"
-import React, { useEffect } from 'react';
 
 var ws = new WebSocket('ws://localhost:40510', 'json');
 // event emmited when connected
 ws.onopen = function () {
   console.log('websocket is connected ...')
   // sending a send event to websocket server
-  ws.send(JSON.stringify({a: 1, b:2}))
+  ws.send(JSON.stringify({ a: 1, b: 2 }))
 }
 // event emmited when receiving message 
 ws.onmessage = function (ev) {
   console.log(ev.data);
-  ws.send(`got message ${ev.data}`);
+  // ws.send(JSON.stringify({`got message ${ev.data}`}));
 }
 const App = () => {
 

@@ -1,29 +1,37 @@
-import { ClientMessage } from "../frontend/src/types/Transport";
+import { ClientMessage, ClientResponse, LobbyRequest, MESSAGE_TYPE } from '../frontend/src/types/Transport';
 
-const gameService = require('./gameService');
-const { games } = gameService;
+import GameService from './GameService';
+import WebSocket from 'ws';
+import { games } from './server';
+
+export const prompts: string[] = ['Biscuits and gravy', 'Mac and Cheese'];
+
 
 // # Websocket logic start
-var WebSocketServer = require('ws').Server,
-  wss = new WebSocketServer({port: 40510})
 
-wss.on('connection', function (ws) {
-  console.log('ws:')
-  console.log(ws)
+const wss = new WebSocket.Server({ port: 40510 })
+
+wss.on('connection', function (ws: WebSocket) {
+
   ws.on('message', function (message: string) {
     console.log('received: %s', message)
     const parsedMessage: ClientMessage = JSON.parse(message);
-    const {gameState, gameId} = message;
-    
-    
+    const { type, gameId } = parsedMessage;
+    const game = games[gameId];
+
+    switch (type) {
+      case MESSAGE_TYPE.LOBBY:
+        game.handleLobbyMessage(parsedMessage as LobbyRequest);
+        break;
+      case MESSAGE_TYPE.GAME:
+        game.handleGameMessage(parsedMessage as ClientResponse);
+        break;
+    }
   })
 
-  // setInterval(
-  //   () => ws.send(JSON.stringify({action: 'PHASE_ONE', data: []})),
-  //   1000
-  // )
+  // Garbage code
+  setInterval(
+    () => ws.send(JSON.stringify({ action: 'PHASE_ONE', data: [] })),
+    1000
+  )
 })
-
-export function foo() {
-  console.log('hi')
-}
