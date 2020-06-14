@@ -1,6 +1,6 @@
 import { Button, ButtonGroup } from 'react-bootstrap';
 import { History, LineHistory } from '../types/History';
-import { Layer, Rect, Stage } from 'react-konva';
+import { Layer, Stage } from 'react-konva';
 import React, { useEffect, useRef } from 'react';
 import { drawLine, playLine } from './tools/Line'
 

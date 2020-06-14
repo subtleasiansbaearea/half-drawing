@@ -1,0 +1,59 @@
+body {
+  //Photo by davisco on Unsplash
+  background: 
+  url("../img/fruit.jpg") no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  background-color: #292a2a;
+}
+
+.home-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  color: white;
+}
+
+.name-of-game {
+  font-size: 7vw;
+  color: white;
+  margin-top: 5%;
+}
+
+.placeholder {
+  color: white;
+}
+
+form {
+  height: 100%;
+  width: 60%;
+  text-align: center;
+  margin: 2% auto;
+  padding: 10% 5%;
+
+  border-color: white;
+  border-width: 10px;
+  border-style: solid;
+}
+
+.field, .enter-button {
+  font-size: 2vw;
+  text-align: center;
+}
+
+input {
+  font-size: 2vw;
+  text-align: center;
+  margin: 10px;
+  border: 0;
+  outline: 0;
+  width: 50%;
+  border-bottom: 1px solid white;
+}
+
+.created-by {
+  color:white;
+  font-size: 1vw;
+}
