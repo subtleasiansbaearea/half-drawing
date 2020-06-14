@@ -38,16 +38,10 @@ class GameService implements Game {
   }
 
   /**
-   * Begin phase one of the game.
-   * Initialize all drawing prompts, then send commands to everyone.
+   * 
+   * @param n number of pairs to initialize
    */
-  phaseOne() {
-    if (this.players.size < 2) {
-      return;
-    }
-    this.gameState = GAME_STATE.PHASE_ONE;
-    // Initialize drawing pairs
-    const n = this.players.size;
+  private initializeDrawingPairs(n: number) {
     const prompts = getNUniqueFromArray(n, WORDPAIRS);
     const playerIds = Array.from(this.players.keys());
     // By "Caesar shifting" the indices by a value from 1 to n-1, 
@@ -65,14 +59,27 @@ class GameService implements Game {
         drawingPairId,
         leftPlayerId: playerIds[i],
         rightPlayerId: playerIds[offsetIndex],
-      }
+      };
       this.drawingPairs.set(drawingPairId, pair);
     }
+  }
+
+  /**
+   * Begin phase one of the game.
+   * Initialize all drawing prompts, then send commands to everyone.
+   */
+  phaseOne() {
+    const n = this.players.size;
+    if (n < 2) {
+      return;
+    }
+    // Initialize drawing pairs
+    this.initializeDrawingPairs(n);
 
     // send commands to all clients to start phase one
+    this.gameState = GAME_STATE.PHASE_ONE;
     for (const [drawingPairId, pair] of this.drawingPairs.entries()) {
       const { leftPlayerId, prompt } = pair;
-      const player = this.players.get(leftPlayerId);
       const command: Transport.PhaseOneCommand = {
         gameState: this.gameState,
         prompt,
@@ -83,16 +90,44 @@ class GameService implements Game {
     }
   }
 
+  /** Returns true if every pair has a left drawing. */
+  readyForPhaseTwo() {
+    return Array.from(this.drawingPairs.values())
+      .every(pair => !!pair.left);
+  }
 
   phaseTwo() {
     this.gameState = GAME_STATE.PHASE_TWO;
-    // TODO - loop through all drawing pairs and 
-    // send the image and a PhaseTwoCommand to the 2nd player.
+    for (const [drawingPairId, pair] of this.drawingPairs.entries()) {
+      const { rightPlayerId, prompt } = pair;
+      const command: Transport.PhaseTwoCommand = {
+        gameState: this.gameState,
+        prompt,
+        drawingPairId,
+        leftDrawing: pair.left,
+      }
+      const socket = this.websockets.get(rightPlayerId);
+      if (socket) socket.send(JSON.stringify(command));
+    }
+  }
+
+  /** Returns true if every pair has a right drawing. */
+  readyForDisplay() {
+    return Array.from(this.drawingPairs.values())
+      .every(pair => !!pair.right);
   }
 
   display() {
     this.gameState = GAME_STATE.DISPLAY;
-    // TODO - send list of drawing pairs to all players
+    const drawingPairs = Array.from(this.drawingPairs.values());
+    const command: Transport.DisplayCommand = {
+      gameState: this.gameState,
+      drawingPairs,
+    };
+
+    for (const socket of this.websockets.values()) {
+      socket.send(JSON.stringify(command));
+    }
   }
 
   handleLobbyMessage(ws: WebSocket, message: Transport.LobbyRequest) {
@@ -143,15 +178,15 @@ class GameService implements Game {
         const { drawing, drawingPairId } = message as Transport.DrawingResponse
         const pair = this.drawingPairs.get(drawingPairId);
         if (pair) pair.left = drawing;
-        // TODO: check if all recieved, and if so fire phase two
+        if (this.readyForPhaseTwo()) this.phaseTwo();
         break;
       }
       case GAME_STATE.PHASE_TWO: {
         const { drawing, drawingPairId } = message as Transport.DrawingResponse
         const pair = this.drawingPairs.get(drawingPairId);
         if (pair) pair.right = drawing;
+        if (this.readyForDisplay()) this.display();
         break;
-        // TODO: check if all recieved, and if so fire display
       }
       case GAME_STATE.DISPLAY:
         // There is no player response in the display area...yet
