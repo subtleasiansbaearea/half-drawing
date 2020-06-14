@@ -23,7 +23,7 @@
   "include": [
     "src",
     "src/types/Types.ts",
-    "src/types/Command.ts",
+    "src/types/Transport.ts",
     "src/types/History.ts"
   ]
 }

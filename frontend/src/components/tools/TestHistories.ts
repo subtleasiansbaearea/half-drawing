@@ -2,6 +2,19 @@ import { DrawingPair } from '../../types/Types'
 import { LineHistory } from '../../types/History';
 
 /**
+ * Get multiple drawings of hearts with different names
+ */
+export function getHeartDrawingPairs() {
+  return [
+    getHeartWithNames('Henry', 'Mavey'),
+    getHeartWithNames('Kevin', 'Michael'),
+    getHeartWithNames('Michael', 'Henry'),
+    getHeartWithNames('Mavey', 'Kevin'),
+    getHeartWithNames('Michael', 'Kevin'),
+  ]
+}
+
+/**
  * Get a drawing pair of a heart
  * @param firstName 
  * @param firstIndex 

@@ -1,10 +1,9 @@
 import '../styles/DisplayPage.scss';
 
-import * as TestHistories from "./tools/TestHistories";
-
 import DisplayCanvas from './DisplayCanvas';
 import { DrawingPair } from "../types/Types"
 import React from 'react';
+import { getHeartDrawingPairs } from './tools/TestHistories';
 
 interface DisplayPageProps {
   drawingPairs: Array<DrawingPair>,
@@ -14,13 +13,7 @@ interface DisplayPageProps {
 
 
 const defaultProps: DisplayPageProps = {
-  drawingPairs: [
-    TestHistories.getHeartWithNames('Henry', 'Mavey'),
-    TestHistories.getHeartWithNames('Kevin', 'Michael'),
-    TestHistories.getHeartWithNames('Michael', 'Henry'),
-    TestHistories.getHeartWithNames('Mavey', 'Kevin'),
-    TestHistories.getHeartWithNames('Michael', 'Kevin'),
-  ],
+  drawingPairs: getHeartDrawingPairs(),
   width: 540,
   height: 540,
 }

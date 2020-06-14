@@ -18,13 +18,16 @@ const BRUSH_WIDTHS = [4, 9, 16, 25, 36];
 const DEFAULT_BRUSH_WIDTH = 16;
 
 interface DrawingComponentProps {
+  prompt: string,
   width: number,
   height: number,
   isLeft: boolean,
-  drawing?: Drawing,
+  leftDrawing?: Drawing,
+  sendDrawing?: (histories: Array<History>) => void
 }
 
 const defaultProps: DrawingComponentProps = {
+  prompt: 'Draw love',
   width: 540,
   height: 540,
   isLeft: true,
@@ -40,7 +43,7 @@ function DrawingComponent(props: DrawingComponentProps) {
   const [brushWidth, setBrushWidth] = useState(DEFAULT_BRUSH_WIDTH);
   const [color, setColor] = useState('#ef740e');
   const [histories, setHistories] = useState<Array<History>>([]);
-  const { width, height, isLeft } = props;
+  const { prompt, width, height, isLeft, leftDrawing, sendDrawing } = props;
 
   function handleColorChange(color: ColorResult) {
     setColor(color.hex);
@@ -62,7 +65,8 @@ function DrawingComponent(props: DrawingComponentProps) {
   function clear() {
     layerRef.current?.destroyChildren();
     layerRef.current?.clear();
-    setHistories([...histories, { mode: 'clear', startTime: Date.now() }]);
+    setHistories(histories =>
+      [...histories, { mode: 'clear', startTime: Date.now() }]);
   }
 
   function undo() {
@@ -71,7 +75,8 @@ function DrawingComponent(props: DrawingComponentProps) {
     if (children.length) {
       children[children.length - 1].destroy();
     }
-    setHistories([...histories, { mode: 'undo', startTime: Date.now() }]);
+    setHistories(histories =>
+      [...histories, { mode: 'undo', startTime: Date.now() }]);
     layerRef.current.draw();
   }
 
@@ -79,19 +84,17 @@ function DrawingComponent(props: DrawingComponentProps) {
     if (e.ctrlKey && e.key === 'z') {
       _.debounce(undo, 500)();
     }
-    if (e.ctrlKey && e.key === 'l') {
-      _.debounce(() => console.log(histories), 1000);
-    }
-  }
+  };
 
   function onInit() {
-    if (layerRef?.current?.children.length === 0) {
-      drawLine();
-    }
-    document.addEventListener('keydown', keydownHandler, false);
+    console.log('on init');
+    window.addEventListener('keydown', keydownHandler);
+    setHistories([]);
+    drawLine();
+    return () => window.removeEventListener('keydown', keydownHandler);
   }
 
-  useEffect(onInit, []);
+  useEffect(onInit, [isLeft]);
 
   const sizeSwatches: Array<JSX.Element> = [];
 
@@ -133,14 +136,15 @@ function DrawingComponent(props: DrawingComponentProps) {
     width={width}
     height={height}
     timescale={0.2}
-    coverLeft={true}
+    coverLeft={!isLeft}
     showButton={false}
+    histories={leftDrawing?.histories}
   />)
 
   return (
     <div className="drawing-section">
       <div className="prompt">
-        Draw Biscuits and Gravy
+        {prompt}
       </div>
       <div className="stage">
         {isLeft ? ActiveStage : PassiveStage}
@@ -161,7 +165,7 @@ function DrawingComponent(props: DrawingComponentProps) {
           <div className="black-border-box" onClick={clear}>
             <img src={ImageConstants.BLANK_PAGE_ICON} alt="Blank"></img>
           </div>
-          <Button>
+          <Button onClick={() => sendDrawing && sendDrawing(histories)}>
             done?
           </Button>
         </div>
