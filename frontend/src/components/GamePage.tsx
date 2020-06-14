@@ -119,10 +119,6 @@ const GamePage = (route: Route) => {
     setDrawingPairs(drawingPairs);
   }
 
-  function sendResponse(response: Transport.GameResponse) {
-    console.log(JSON.stringify(response));
-  }
-
   function createAndSendDrawing(histories: Array<History>) {
     const drawing: Drawing = {
       histories: histories,
@@ -137,15 +133,15 @@ const GamePage = (route: Route) => {
       playerId: playerId,
     }
 
-    sendResponse(response);
+    ws?.send(JSON.stringify(response));
   }
 
 
 
-  let Component;
+  let component;
   switch (gameState) {
     case GAME_STATE.LOBBY:
-      Component = (<LobbyPage
+      component = (<LobbyPage
         players={players}
         updateName={setPlayerName}
         isReady={isReady}
@@ -171,7 +167,7 @@ const GamePage = (route: Route) => {
       />);
       break;
     case GAME_STATE.PHASE_ONE:
-      Component = (<DrawingPage
+      component = (<DrawingPage
         prompt={prompt}
         width={DRAWING_HEIGHT}
         height={DRAWING_HEIGHT}
@@ -180,7 +176,7 @@ const GamePage = (route: Route) => {
       />);
       break;
     case GAME_STATE.PHASE_TWO:
-      Component = (<DrawingPage
+      component = (<DrawingPage
         prompt={prompt}
         width={DRAWING_HEIGHT}
         height={DRAWING_HEIGHT}
@@ -190,7 +186,7 @@ const GamePage = (route: Route) => {
       />);
       break;
     case GAME_STATE.DISPLAY:
-      Component = (<DisplayPage
+      component = (<DisplayPage
         drawingPairs={drawingPairs}
         width={DRAWING_HEIGHT}
         height={DRAWING_HEIGHT}
@@ -232,7 +228,7 @@ const GamePage = (route: Route) => {
               Display
         </Button>
           </ButtonGroup>
-          {Component}
+          {component}
         </>
       }
     </div >
