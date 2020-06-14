@@ -22,7 +22,7 @@ interface DrawingComponentProps {
   width: number,
   height: number,
   isLeft: boolean,
-  drawing?: Drawing,
+  leftDrawing?: Drawing,
   sendDrawing?: (histories: Array<History>) => void
 }
 
@@ -43,7 +43,7 @@ function DrawingComponent(props: DrawingComponentProps) {
   const [brushWidth, setBrushWidth] = useState(DEFAULT_BRUSH_WIDTH);
   const [color, setColor] = useState('#ef740e');
   const [histories, setHistories] = useState<Array<History>>([]);
-  const { prompt, width, height, isLeft, sendDrawing } = props;
+  const { prompt, width, height, isLeft, leftDrawing, sendDrawing } = props;
 
   function handleColorChange(color: ColorResult) {
     setColor(color.hex);
@@ -136,8 +136,9 @@ function DrawingComponent(props: DrawingComponentProps) {
     width={width}
     height={height}
     timescale={0.2}
-    coverLeft={true}
+    coverLeft={!isLeft}
     showButton={false}
+    histories={leftDrawing?.histories}
   />)
 
   return (
