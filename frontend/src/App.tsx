@@ -18,7 +18,8 @@ ws.onopen = function () {
   }
   // event emmited when receiving message 
   ws.onmessage = function (ev) {
-    console.log(ev);
+    console.log(ev.data);
+    ws.send(`got message ${ev.data}`);
   }
 const App = () => {
   // Set a full width CSS temporarily just for debugging purposes
