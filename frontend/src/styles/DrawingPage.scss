@@ -51,6 +51,10 @@ $twenty-pixels: 20px;
   display: flex;
   flex-direction: column;
 
+  border-color: blue;
+  border-width: 5px;
+  border-style: solid;
+
   .prompt {
     font-size: 32px;
     text-align: center;

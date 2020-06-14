@@ -3,7 +3,9 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const websocketService = require('./websocketService');
 const https = require('https');
-import {Game} from '../frontend/src/types/Types';
+const webSocketsServerPort = 8000;
+const cors = require('cors');
+
 
 const { v4: uuidv4 } = require('uuid')
 
@@ -13,12 +15,12 @@ const port = process.env.PORT || 5000;
 const TWENTY_MINUTES_IN_MS = 1200000;
 
 
-
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const prompts: string[] = ['Biscuits and gravy'];
-const games: {[key: string]: Game} = {};
+const games: {[key: string]: any} = {};
 const clients = {};
 
 
@@ -48,7 +50,7 @@ const endLobby = (id: any) => delete games[id];
 // ### Endpoints Start
 app.post('/lobby/init', (req: any, res: any) => {
   let lobby = addNewLobby();
-  res.status(200).send({ id: lobby });
+  res.status(200).json({ id: lobby });
 });
 
 app.post('/lobby/addPlayer', (req: any, res: any) => {

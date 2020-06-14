@@ -21,8 +21,6 @@ ws.onmessage = function (ev) {
   ws.send(`got message ${ev.data}`);
 }
 const App = () => {
-  // Set a full width CSS temporarily just for debugging purposes
-  const FULL_WIDTH_CSS = { width: '100%' };
 
   return (
     <div className="App">
@@ -32,7 +30,7 @@ const App = () => {
         <Route exact path="/game" component={GameNotFoundPage} />
         <Route exact path="/game/:gameId" component={GamePage} />
 
-        <span style={FULL_WIDTH_CSS}>
+        <span>
           <Link to="/">Home</Link><br />
           <Link to="/game">Game404</Link><br />
           <Link to="/game/gameId">Game</Link>
