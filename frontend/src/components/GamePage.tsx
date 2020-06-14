@@ -79,7 +79,7 @@ const GamePage = (match: Route) => {
     setDrawingPairs(drawingPairs);
   }
 
-  function sendResponse(response: Transport.ClientResponse) {
+  function sendResponse(response: Transport.GameResponse) {
     console.log(JSON.stringify(response));
   }
 

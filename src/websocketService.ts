@@ -1,6 +1,5 @@
-import { ClientMessage, ClientResponse, LobbyRequest, MESSAGE_TYPE } from '../frontend/src/types/Transport';
+import { ClientMessage, GameResponse, LobbyRequest, MESSAGE_TYPE } from '../frontend/src/types/Transport';
 
-import GameService from './GameService';
 import WebSocket from 'ws';
 import { games } from './server';
 
@@ -24,7 +23,7 @@ wss.on('connection', function (ws: WebSocket) {
         game.handleLobbyMessage(parsedMessage as LobbyRequest);
         break;
       case MESSAGE_TYPE.GAME:
-        game.handleGameMessage(parsedMessage as ClientResponse);
+        game.handleGameMessage(parsedMessage as GameResponse);
         break;
     }
   })
