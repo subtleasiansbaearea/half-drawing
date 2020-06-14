@@ -61,10 +61,9 @@ const GamePage = (match: Route) => {
   }
 
   function handlePhaseOneCommand(command: Transport.PhaseOneCommand) {
-    const { prompt, drawingPairId, playerId } = command;
+    const { prompt, drawingPairId } = command;
     setPrompt(prompt);
     setDrawingPairId(drawingPairId);
-    setPlayerId(playerId);
   }
 
   function handlePhaseTwoCommand(command: Transport.PhaseTwoCommand) {
@@ -90,7 +89,6 @@ const GamePage = (match: Route) => {
     }
 
     const response: Transport.DrawingResponse = {
-      type: Transport.MESSAGE_TYPE.GAME,
       gameId: gameId,
       gameState: gameState,
       drawing: drawing,

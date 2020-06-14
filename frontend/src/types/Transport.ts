@@ -5,21 +5,16 @@ export interface CreateGameResponse {
   gameId: string;
 }
 
-// Game Transport Types
-/** From server to client. */
-export interface ServerCommand {
+// Base Types
+/** From client to server */
+export interface ClientMessage {
+  gameId: string;
   gameState: GAME_STATE;
 }
 
-// Websocket transport types
-export enum MESSAGE_TYPE {
-  LOBBY,
-  GAME
-}
-
-export interface ClientMessage {
-  gameId: string;
-  type: MESSAGE_TYPE;
+/** From server to client. */
+export interface ServerCommand {
+  gameState: GAME_STATE;
 }
 
 // Lobby transport types
@@ -28,8 +23,6 @@ export enum LOBBY_MESSAGE_TYPE {
   UPDATE_NAME_REQUEST,
   UPDATE_READY_STATE_REQUEST,
   START_GAME_REQUEST,
-  UPDATE_LOBBY_COMMAND,
-  // TODO: responses
 }
 
 export interface LobbyRequest extends ClientMessage {
@@ -50,21 +43,19 @@ export interface UpdateReadyRequest extends LobbyRequest {
   isReady: boolean;
 }
 
-/** From client to server. */
-export interface GameResponse extends ClientMessage {
-  playerId: string;
-  gameState: GAME_STATE;
-}
-
 export interface LobbyUpdateCommand extends ServerCommand {
   playerId: string;
   players: Player[];
 }
 
+// Game Transport Types
+export interface GameResponse extends ClientMessage {
+  playerId: string;
+}
+
 export interface PhaseOneCommand extends ServerCommand {
   prompt: string;
   drawingPairId: string;
-  playerId: string;
 }
 
 export interface PhaseTwoCommand extends ServerCommand {

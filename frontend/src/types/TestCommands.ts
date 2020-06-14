@@ -1,4 +1,4 @@
-import { DisplayCommand, MESSAGE_TYPE, PhaseOneCommand, PhaseTwoCommand } from "./Transport";
+import { DisplayCommand, PhaseOneCommand, PhaseTwoCommand } from "./Transport";
 import { HEART_LEFT, getHeartDrawingPairs } from "../components/tools/TestHistories";
 
 import { GAME_STATE } from "./Types";
@@ -7,7 +7,6 @@ export const TEST_PHASE_ONE_COMMAND: PhaseOneCommand = {
   gameState: GAME_STATE.PHASE_ONE,
   prompt: 'Draw biscuits and gravy',
   drawingPairId: 'drawingPairId1',
-  playerId: 'player1id'
 };
 
 export const TEST_PHASE_TWO_COMMAND: PhaseTwoCommand = {
