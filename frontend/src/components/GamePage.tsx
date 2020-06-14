@@ -68,8 +68,7 @@ const GamePage = (route: Route) => {
     }
     // event emmited when receiving message 
     ws.onmessage = function (ev) {
-      console.log(ev.data)
-      handleCommand(ev.data);
+      handleCommand(JSON.parse(ev.data) as Transport.ServerCommand);
     }
   };
 
@@ -77,14 +76,14 @@ const GamePage = (route: Route) => {
 
   function updatePlayerState() {
     const user = players.find(p => p.playerId === playerId);
-      setIsReady(user?.isReady);
+    setIsReady(user?.isReady);
   }
 
   function handleCommand(command: Transport.ServerCommand) {
-    console.log(command.gameState);
+    console.log(command);
     switch (command.gameState) {
       case GAME_STATE.LOBBY:
-        const {playerId, players}= (command as Transport.LobbyUpdateCommand);
+        const { playerId, players } = (command as Transport.LobbyUpdateCommand);
         setPlayerId(playerId);
         setPlayers(players);
         updatePlayerState()
@@ -154,7 +153,7 @@ const GamePage = (route: Route) => {
             playerId,
             isReady: !players.find(p => p.playerId === playerId)?.isReady,
           };
-          
+
           ws?.send(JSON.stringify(updateLobbyReadyStateMessage));
         }}
         startGame={() => {

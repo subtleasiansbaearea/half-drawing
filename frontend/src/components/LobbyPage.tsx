@@ -23,48 +23,46 @@ const LobbyPage = (props: LobbyPageProps) => {
   const canStartGame = players.every(p => p.isReady);
 
   return (
-    <>
-      <div className="lobby-page">
-        <div className="lobby-column">
-          <section>
-            <h3>Settings</h3>
-            <div className="control-group">
-              <label>Name</label>
-              <InputGroup>
-                <FormControl />
-              </InputGroup>
-            </div>
-            <div className="control-group">
-              <label>Time limit per round</label>
-              <p>90 seconds</p>
-            </div>
-          </section>
-          <section>
-            <h3>Rules</h3>
-            <p>{placeholderRulesText}</p>
-          </section>
-        </div>
-        <div className="lobby-column">
-          <section>
-            <h3>Players</h3>
-            <div className="player-names">
-              <div className="control-group">
-                <div id="first-player-name">Alice {isReady ? ' is Ready' : null}</div>
-              </div>
-              <div className="control-group">
-                <div id="second-player-name">Bob {isReady ? ' is Ready' : null}</div>
-              </div>
-            </div>
-          </section>
-          <ButtonGroup>
-            <Button variant="primary" size="lg" onClick={startGame} disabled={!canStartGame}>Start Game</Button>
-          </ButtonGroup>
-          <ButtonGroup>
-            <Button variant="primary" size="lg" onClick={setReady}>Ready</Button>
-          </ButtonGroup>
-        </div>
+    <div className="lobby-page">
+      <div className="lobby-column">
+        <section>
+          <h3>Settings</h3>
+          <div className="control-group">
+            <label>Name</label>
+            <InputGroup>
+              <FormControl />
+            </InputGroup>
+          </div>
+          <div className="control-group">
+            <label>Time limit per round</label>
+            <p>90 seconds</p>
+          </div>
+        </section>
+        <section>
+          <h3>Rules</h3>
+          <p>{placeholderRulesText}</p>
+        </section>
       </div>
-    </>
+      <div className="lobby-column">
+        <section>
+          <h3>Players</h3>
+          <div className="player-names">
+            <div className="control-group">
+              <div id="first-player-name">Alice {isReady ? ' is Ready' : null}</div>
+            </div>
+            <div className="control-group">
+              <div id="second-player-name">Bob {isReady ? ' is Ready' : null}</div>
+            </div>
+          </div>
+        </section>
+        <ButtonGroup>
+          <Button variant="primary" size="lg" onClick={startGame} disabled={!canStartGame}>Start Game</Button>
+        </ButtonGroup>
+        <ButtonGroup>
+          <Button variant="primary" size="lg" onClick={setReady}>Ready</Button>
+        </ButtonGroup>
+      </div>
+    </div>
   );
 };
 

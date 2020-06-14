@@ -25,14 +25,21 @@ class GameService implements Game {
     // as ES6 preserves insertion order
   }
 
+  logLobbyStatus() {
+    console.log(this.players);
+  }
+
   /** Send a lobby update command to all players. */
   fireLobbyUpdate() {
+    this.logLobbyStatus();
     for (const [playerId, socket] of this.websockets) {
       const command: Transport.LobbyUpdateCommand = {
         gameState: this.gameState,
         playerId,
         players: Array.from(this.players.values()),
       }
+      const playerName = this.players.get(playerId)?.name;
+      console.log(`sending lobby update to ${playerName}`);
       socket.send(JSON.stringify(command));
     }
   }

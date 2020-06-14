@@ -17,7 +17,7 @@ wss.on('connection', function (ws: WebSocket) {
     const { gameId } = parsedMessage;
     const game = games[gameId];
 
-    game.handleClientMessage(ws, parsedMessage);
+    game?.handleClientMessage(ws, parsedMessage);
   })
 
   // Garbage code
