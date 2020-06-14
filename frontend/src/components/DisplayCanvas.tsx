@@ -97,11 +97,12 @@ function DisplayCanvas(props: DisplayCanvasProps) {
         y: 0,
         width: width - STRIP_WIDTH,
         height: height,
-        fill: 'white',
+        fill: 'green',
         globalCompositeOperation: 'destination-out'
       })
-
-      layerRef.current.getLayer().add(eraseRect);
+      const layer = layerRef.current.getLayer();
+      layer.add(eraseRect);
+      layer.draw();
     }
     // erase everything to the left
   }
