@@ -4,6 +4,7 @@ import * as Transport from '../types/Transport';
 
 import { Drawing, DrawingPair, GAME_STATE } from '../types/Types';
 import React, { useState } from 'react';
+import { TEST_DISPLAY_COMMAND, TEST_PHASE_ONE_COMMAND, TEST_PHASE_TWO_COMMAND } from '../types/TestCommands';
 
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
@@ -41,6 +42,7 @@ const GamePage = (match: Route) => {
   } = match;
 
   function handleCommand(command: Transport.ServerCommand) {
+    console.log(command.gameState);
     switch (command.gameState) {
       case GAME_STATE.LOBBY:
         // do nothing
@@ -122,7 +124,7 @@ const GamePage = (match: Route) => {
         height={DRAWING_HEIGHT}
         isLeft={false}
         sendDrawing={createAndSendDrawing}
-        drawing={leftDrawing}
+        leftDrawing={leftDrawing}
       />);
       break;
     case GAME_STATE.DISPLAY:
@@ -141,30 +143,34 @@ const GamePage = (match: Route) => {
         <Button
           variant="primary"
           onClick={() => setGameState(GAME_STATE.LOBBY)}
+          active={gameState === GAME_STATE.LOBBY}
         >
           Lobby
         </Button>
         <Button
           variant="primary"
-          onClick={() => setGameState(GAME_STATE.PHASE_ONE)}
+          onClick={() => handleCommand(TEST_PHASE_ONE_COMMAND)}
+          active={gameState === GAME_STATE.PHASE_ONE}
         >
           Phase 1
         </Button>
         <Button
           variant="primary"
-          onClick={() => setGameState(GAME_STATE.PHASE_TWO)}
+          onClick={() => handleCommand(TEST_PHASE_TWO_COMMAND)}
+          active={gameState === GAME_STATE.PHASE_TWO}
         >
           Phase 2
         </Button>
         <Button
           variant="primary"
-          onClick={() => setGameState(GAME_STATE.DISPLAY)}
+          onClick={() => handleCommand(TEST_DISPLAY_COMMAND)}
+          active={gameState === GAME_STATE.DISPLAY}
         >
           Display
         </Button>
       </ButtonGroup>
       {Component}
-    </div>
+    </div >
   );
 };
 
