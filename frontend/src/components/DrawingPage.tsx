@@ -149,7 +149,7 @@ function DrawingComponent(props: DrawingComponentProps) {
 
   return (
     <div className="drawing-section">
-      <Timer cb={handleSendDrawing} />
+      {/* <Timer cb={handleSendDrawing} /> */}
       <div className="prompt">
         {`${promptPrefix} ${prompt}`}
       </div>
