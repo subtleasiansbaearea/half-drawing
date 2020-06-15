@@ -14,11 +14,10 @@ export enum GAME_STATE {
  * Main representation object of a game.
  */
 export interface Game {
-  timerId: string, // for timimg out and GC
-  players: { [playerId: string]: Player },
-  drawingPairs: { [drawingPairId: string]: DrawingPair },
-  state: GAME_STATE,
-  hostId: string, // playerId
+  timerId: NodeJS.Timeout, // for timimg out and GC
+  drawingPairs: Map<string, DrawingPair>;
+  players: Map<string, Player>;
+  gameState: GAME_STATE,
 }
 
 /**
@@ -28,7 +27,6 @@ export interface Player {
   playerId: string,
   name: string,
   isReady: boolean,
-  socket: string,
 }
 
 /**

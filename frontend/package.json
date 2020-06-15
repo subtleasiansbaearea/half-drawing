@@ -14,6 +14,7 @@
     "@types/react-dom": "^16.9.8",
     "@types/react-router": "^5.1.7",
     "@types/react-router-dom": "^5.1.5",
+    "@types/websocket": "^1.0.0",
     "konva": "^6.0.0",
     "lodash": "^4.17.15",
     "node-sass": "^4.14.1",

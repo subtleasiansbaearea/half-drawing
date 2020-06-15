@@ -11,11 +11,14 @@ import DisplayCanvas from './DisplayCanvas';
 import { Drawing } from '../types/Types';
 import { History } from '../types/History'
 import Konva from 'konva';
+import Timer from './Timer';
 import _ from 'lodash';
 import { addLine } from './tools/Line'
 
 const BRUSH_WIDTHS = [4, 9, 16, 25, 36];
 const DEFAULT_BRUSH_WIDTH = 16;
+const PHASE_ONE_PROMPT = 'Draw half of ';
+const PHASE_TWO_PROMPT = 'Finish the drawing of ';
 
 interface DrawingComponentProps {
   prompt: string,
@@ -97,6 +100,7 @@ function DrawingComponent(props: DrawingComponentProps) {
   useEffect(onInit, [isLeft]);
 
   const sizeSwatches: Array<JSX.Element> = [];
+  const promptPrefix = isLeft ? PHASE_ONE_PROMPT : PHASE_TWO_PROMPT;
 
   // TODO(TangerineCat): move brushes into sub component
   for (const size of BRUSH_WIDTHS) {
@@ -141,10 +145,13 @@ function DrawingComponent(props: DrawingComponentProps) {
     histories={leftDrawing?.histories}
   />)
 
+  const handleSendDrawing = () => sendDrawing && sendDrawing(histories);
+
   return (
     <div className="drawing-section">
+      {/* <Timer cb={handleSendDrawing} /> */}
       <div className="prompt">
-        {prompt}
+        {`${promptPrefix} ${prompt}`}
       </div>
       <div className="stage">
         {isLeft ? ActiveStage : PassiveStage}
@@ -165,7 +172,7 @@ function DrawingComponent(props: DrawingComponentProps) {
           <div className="black-border-box" onClick={clear}>
             <img src={ImageConstants.BLANK_PAGE_ICON} alt="Blank"></img>
           </div>
-          <Button onClick={() => sendDrawing && sendDrawing(histories)}>
+          <Button onClick={handleSendDrawing}>
             done?
           </Button>
         </div>
