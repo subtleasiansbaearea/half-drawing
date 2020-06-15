@@ -138,6 +138,7 @@ class GameService implements Game {
   }
 
   handleLobbyMessage(ws: WebSocket, message: Transport.LobbyRequest) {
+    if (this.gameState !== GAME_STATE.LOBBY) return;
     const { lobbyType } = message;
     switch (lobbyType) {
       case LOBBY_MESSAGE_TYPE.NEW_PLAYER_REQUEST:
@@ -177,6 +178,8 @@ class GameService implements Game {
 
   handleClientMessage(ws: WebSocket, message: Transport.ClientMessage) {
     const { gameState } = message;
+    // Command consumed during wrong time!
+    if (this.gameState !== gameState) return;
     switch (gameState) {
       case GAME_STATE.LOBBY:
         this.handleLobbyMessage(ws, message as Transport.LobbyRequest);
