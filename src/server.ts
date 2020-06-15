@@ -57,7 +57,9 @@ app.get('/lobby/all', (req: any, res: any) => {
 if (process.env.NODE_ENV === 'production') {
   // Serve any static files
   app.use(express.static(path.join(__dirname, '../../frontend/build')));
-
+  console.log('dirname:')
+  console.log(__dirname)
+  console.log(path.join(__dirname, '../../frontend/build', 'index.html'));
   // Handle React routing, return all requests to React app
   app.get('/', function (req: any, res: any) {
     res.sendFile(path.join(__dirname, '../../frontend/build', 'index.html'));
