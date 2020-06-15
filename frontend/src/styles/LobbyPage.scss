@@ -15,14 +15,14 @@ $offset-player-name-from-left: 200px;
   flex-wrap: wrap;
   .lobby-colummn:last-of-type {
     display: block;
-    // background-color: blue;
     margin-left: 40px;
   }
   .lobby-column {
     label {
       font-weight: bold;
     }
-  	padding: 50px;
+    background-color: white;
+    padding: 50px;
     width: 46%;
     border: $black-border;
     height: $lobby-column-height;
@@ -35,32 +35,25 @@ $offset-player-name-from-left: 200px;
   .player-name {
     font-size: 50px;
   }
-  #first-player-name {
-    @extend .player-name;
-    // spinnnnnnn
-    // transform: rotate(20deg);
-    // padding-left: 100px;
-    // blueeeeee
-    color: red;
-    padding-top: 100px;
-    text-shadow:
-      -3px -3px 0 #000,
-      3px -3px 0 #000,
-      -3px 3px 0 #000,
-      3px 3px 0 #000;
+
+  .ready-indicator {
+    border-radius: 100%;
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    position: relative;
+    margin-left: 10px;
+
+    top: 5px;
   }
-  #second-player-name {
-    @extend .player-name;
-    // spinnnnnnn
-    // transform: rotate(340deg);
-    // padding-left: 400px;
-    color: red;
-    text-shadow:
-      -3px -3px 0 #000,
-      3px -3px 0 #000,
-      -3px 3px 0 #000,
-      3px 3px 0 #000;
+
+  .ready {
+    background-color: green;
   }
+  .not-ready {
+    background-color: red;
+  }
+
   .btn-group {
     // this will probably go away maybe idk
     padding-top: 30px;

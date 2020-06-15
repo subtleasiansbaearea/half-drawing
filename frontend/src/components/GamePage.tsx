@@ -41,7 +41,7 @@ const GamePage = (route: Route) => {
   const [ws, setWs] = useState<WebSocket | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [players, setPlayers] = useState<Player[]>([]);
-  const [isReady, setIsReady] = useState<boolean | undefined>(false);
+  const [isReady, setIsReady] = useState<boolean>(false);
   const {
     match: {
       params: { gameId }
@@ -76,7 +76,8 @@ const GamePage = (route: Route) => {
 
   function updatePlayerState() {
     const user = players.find(p => p.playerId === playerId);
-    setIsReady(user?.isReady);
+    setIsReady(user?.isReady || false);
+    setPlayerName(user?.name || '');
   }
 
   function handleCommand(command: Transport.ServerCommand) {
@@ -86,6 +87,11 @@ const GamePage = (route: Route) => {
         const { playerId, players } = (command as Transport.LobbyUpdateCommand);
         setPlayerId(playerId);
         setPlayers(players);
+        if (!playerName) {
+          const name =
+            players.find(player => player.playerId === playerId)?.name;
+          setPlayerName(name ? name : '');
+        }
         updatePlayerState()
         break;
       case GAME_STATE.PHASE_ONE:
@@ -121,21 +127,51 @@ const GamePage = (route: Route) => {
 
   function createAndSendDrawing(histories: Array<History>) {
     const drawing: Drawing = {
-      histories: histories,
-      playerName: playerName,
+      histories,
+      playerName,
     }
 
     const response: Transport.DrawingResponse = {
-      gameId: gameId,
-      gameState: gameState,
-      drawing: drawing,
-      drawingPairId: drawingPairId,
-      playerId: playerId,
+      gameId,
+      gameState,
+      drawing,
+      drawingPairId,
+      playerId,
     }
 
     ws?.send(JSON.stringify(response));
   }
+  function onUpdateName(name: string) {
+    const message: Transport.UpdateNameRequest = {
+      gameState: GAME_STATE.LOBBY,
+      lobbyType: LOBBY_MESSAGE_TYPE.UPDATE_NAME_REQUEST,
+      gameId,
+      playerId,
+      newName: name,
+    };
+    ws?.send(JSON.stringify(message));
+  }
 
+  function onSetReady() {
+    const updateLobbyReadyStateMessage: Transport.UpdateReadyRequest = {
+      gameState: GAME_STATE.LOBBY,
+      lobbyType: LOBBY_MESSAGE_TYPE.UPDATE_READY_STATE_REQUEST,
+      gameId,
+      playerId,
+      isReady: !players.find(p => p.playerId === playerId)?.isReady,
+    };
+
+    ws?.send(JSON.stringify(updateLobbyReadyStateMessage));
+  }
+
+  function onStartGame() {
+    const startGameRequestMessage: Transport.StartGameRequest = {
+      gameId,
+      gameState,
+      lobbyType: LOBBY_MESSAGE_TYPE.START_GAME_REQUEST,
+    };
+    ws?.send(JSON.stringify(startGameRequestMessage));
+  }
 
 
   let component;
@@ -143,27 +179,10 @@ const GamePage = (route: Route) => {
     case GAME_STATE.LOBBY:
       component = (<LobbyPage
         players={players}
-        updateName={setPlayerName}
+        updateName={onUpdateName}
         isReady={isReady}
-        setReady={() => {
-          const updateLobbyReadyStateMessage: Transport.UpdateReadyRequest = {
-            gameState: GAME_STATE.LOBBY,
-            lobbyType: LOBBY_MESSAGE_TYPE.UPDATE_READY_STATE_REQUEST,
-            gameId,
-            playerId,
-            isReady: !players.find(p => p.playerId === playerId)?.isReady,
-          };
-
-          ws?.send(JSON.stringify(updateLobbyReadyStateMessage));
-        }}
-        startGame={() => {
-          const startGameRequestMessage: Transport.StartGameRequest = {
-            gameId,
-            gameState,
-            lobbyType: LOBBY_MESSAGE_TYPE.START_GAME_REQUEST,
-          };
-          ws?.send(JSON.stringify(startGameRequestMessage));
-        }}
+        setReady={onSetReady}
+        startGame={onStartGame}
       />);
       break;
     case GAME_STATE.PHASE_ONE:
@@ -205,28 +224,28 @@ const GamePage = (route: Route) => {
               active={gameState === GAME_STATE.LOBBY}
             >
               Lobby
-        </Button>
+            </Button>
             <Button
               variant="primary"
               onClick={() => handleCommand(TEST_PHASE_ONE_COMMAND)}
               active={gameState === GAME_STATE.PHASE_ONE}
             >
               Phase 1
-        </Button>
+            </Button>
             <Button
               variant="primary"
               onClick={() => handleCommand(TEST_PHASE_TWO_COMMAND)}
               active={gameState === GAME_STATE.PHASE_TWO}
             >
               Phase 2
-        </Button>
+            </Button>
             <Button
               variant="primary"
               onClick={() => handleCommand(TEST_DISPLAY_COMMAND)}
               active={gameState === GAME_STATE.DISPLAY}
             >
               Display
-        </Button>
+            </Button>
           </ButtonGroup>
           {component}
         </>
